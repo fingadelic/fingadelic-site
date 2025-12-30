@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINGADELIC | The Official Site of Fingazz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Theme Variables */
+            --bg-dark: #050505;
+            --bg-card: #0a0a0a;
+            
+            /* The Fingadelic Palette */
+            --primary: #00f3ff; /* Neon Cyan */
+            --secondary: #ff0055; /* Hot Pink */
+            --neon-purple: #bd00ff; /* Logo Purple */
+            
+            --text-main: #ffffff;
+            --text-muted: #b0b0b0;
+            --font-head: 'Montserrat', sans-serif;
+            --font-body: 'Roboto', sans-serif;
+            
+            /* Glow Effects */
+            --box-glow: 0 0 20px rgba(189, 0, 255, 0.3), 0 0 40px rgba(0, 243, 255, 0.2);
+            --text-glow: 0 0 10px rgba(189, 0, 255, 0.8), 0 0 20px rgba(0, 243, 255, 0.6);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            background-image: radial-gradient(circle at center top, #1a0024 0%, #000000 60%);
+            overflow-x: hidden;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3, h4, h5 {
+            font-family: var(--font-head);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 900;
+            text-shadow: var(--text-glow);
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- UTILITIES --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .section-padding { padding: 100px 0; }
+        .text-center { text-align: center; }
+        .highlight { color: var(--primary); text-shadow: var(--text-glow); }
+        .highlight-pink { color: var(--secondary); text-shadow: 0 0 10px var(--secondary); }
+        .hidden { display: none !important; }
+
+        /* --- BUTTONS (Chrome Style) --- */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 15px var(--primary), inset 0 0 15px rgba(0, 243, 255, 0.2);
+            text-shadow: 0 0 5px var(--primary);
+        }
+        .btn-primary:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 30px var(--primary), 0 0 50px var(--neon-purple);
+            text-shadow: none;
+        }
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            box-shadow: 0 0 15px var(--secondary);
+        }
+        .btn-secondary:hover {
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 0 30px var(--secondary);
+        }
+
+        /* --- HEADER & NAV --- */
+        header {
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(5, 5, 5, 0.9);
+            border-bottom: 2px solid;
+            border-image: linear-gradient(to right, var(--neon-purple), var(--primary), var(--secondary)) 1;
+            backdrop-filter: blur(15px);
+        }
+        nav { display: flex; justify-content: space-between; align-items: center; }
+        
+        .logo-container img { 
+            height: 50px; 
+            filter: drop-shadow(0 0 10px rgba(189, 0, 255, 0.6)); 
+            transition:0.3s; 
+        }
+        .logo-container img:hover { filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.8)); }
+
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: #fff; }
+        .nav-links a:hover { color: var(--primary); text-shadow: 0 0 15px var(--primary); }
+
+        /* --- MOBILE MENU STYLES --- */
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            margin-left: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .nav-links {
+                position: fixed;
+                top: 0; right: -100%;
+                height: 100vh;
+                width: 70%;
+                background: #000;
+                border-left: 2px solid var(--primary);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: 0.3s;
+                z-index: 1000;
+            }
+            .nav-links.active { right: 0; display: flex; }
+            .mobile-menu-btn { display: block; }
+        }
+
+        /* ============================
+           SECTION: LANDING PAGE
+           ============================ */
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            background-color: #000;
+            /* IMAGE REF: Main Background */
+            background-image: radial-gradient(circle at center, rgba(189, 0, 255, 0.15) 0%, transparent 60%),
+                              linear-gradient(to bottom, #000 0%, transparent 50%, #000 100%),
+                              url('images/hero-bg.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        /* Scanline Overlay */
+        .hero::after {
+            content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.3) 0px, rgba(0,0,0,0.3) 1px, transparent 1px, transparent 4px);
+            pointer-events: none;
+        }
+
+        .hero h1 { font-size: 4.5rem; line-height: 0.9; margin-bottom: 20px; text-shadow: 0 0 20px rgba(189, 0, 255, 0.8), 0 0 40px rgba(0, 243, 255, 0.6); }
+        .hero p { font-size: 1.2rem; color: #ddd; margin-bottom: 40px; border-left: 3px solid var(--secondary); padding-left: 20px; position: relative; z-index: 2;}
+        .hero-content { position: relative; z-index: 2; max-width: 700px; padding-left: 20px;}
+
+        /* DISC SECTION */
+        .album-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 50px; }
+        .album-card { background: var(--bg-card); border-radius: 8px; border: 1px solid #222; overflow: hidden; transition: 0.4s; }
+        .album-card:hover { border-color: var(--primary); box-shadow: 0 0 30px rgba(0, 243, 255, 0.2); transform: translateY(-5px); }
+        .album-art { width: 100%; aspect-ratio: 1/1; background: #111; overflow: hidden; }
+        .album-art img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; filter: grayscale(50%); }
+        .album-card:hover .album-art img { filter: grayscale(0%); transform: scale(1.05); }
+        .album-info { padding: 20px; background: #0f0f0f; }
+
+        /* ACADEMY SECTION */
+        .academy-section { background: #080808; border-top: 2px solid var(--neon-purple); border-bottom: 2px solid var(--secondary); box-shadow: var(--box-glow); }
+        .course-layout { display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; align-items: center; }
+        .featured-course-card { 
+            background: linear-gradient(145deg, #111, #0a0a0a); 
+            border: 2px solid; border-image: linear-gradient(to bottom right, var(--primary), var(--neon-purple)) 1; 
+            padding: 40px; position: relative; box-shadow: var(--box-glow);
+        }
+        .course-price { font-size: 3rem; font-weight: 900; color: white; margin: 20px 0; text-shadow: 0 0 15px var(--primary); }
+        .course-features li { margin-bottom: 12px; color: #ccc; font-size: 1rem; }
+        
+        /* BIO SECTION */
+        .bio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
+        .bio-image-container { position: relative; z-index: 1; }
+        .bio-border-top {
+            position: absolute; top: -30px; left: -30px; width: 150px; height: 150px; z-index: -1;
+            border-top: 5px solid var(--primary); border-left: 5px solid var(--neon-purple);
+        }
+        .bio-border-bottom {
+             position: absolute; bottom: -30px; right: -30px; width: 150px; height: 150px; z-index: -1;
+            border-bottom: 5px solid var(--secondary); border-right: 5px solid var(--primary);
+        }
+
+        /* ============================
+           SECTION: LMS (LEARNING SYSTEM)
+           ============================ */
+        
+        .lms-container { display: grid; grid-template-columns: 350px 1fr; height: 100vh; padding-top: 85px; }
+        .lms-sidebar { background: #080808; border-right: 1px solid #333; overflow-y: auto; display: flex; flex-direction: column; }
+        .lms-progress-card { padding: 20px; background: #111; border-bottom: 1px solid #333; }
+        .progress-bar { width: 100%; height: 6px; background: #333; border-radius: 3px; margin-top: 10px; overflow: hidden;}
+        .progress-fill { width: 15%; height: 100%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+        
+        .lms-module-header { padding: 15px 20px; background: #0a0a0a; border-bottom: 1px solid #222; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; font-weight: 700; }
+        .lesson-item { padding: 15px 20px; cursor: pointer; border-left: 3px solid transparent; transition: 0.2s; display: flex; align-items: center; color: #ccc; }
+        .lesson-item:hover { background: #151515; color: white; }
+        .lesson-item.active { background: rgba(0, 243, 255, 0.05); border-left: 3px solid var(--primary); color: var(--primary); }
+        .lesson-item.locked { opacity: 0.5; cursor: not-allowed; }
+        
+        .lms-content { padding: 40px; background: #050505; overflow-y: auto; }
+        .video-container { width: 100%; aspect-ratio: 16 / 9; background: black; border: 1px solid #333; margin-bottom: 30px; position: relative; }
+        .video-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; background: radial-gradient(circle, #1a1a1a, #000); }
+        .resources-box { background: #111; border: 1px solid #333; padding: 20px; border-radius: 8px; margin-top: 30px; }
+        .resource-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; color: #ccc; }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .checkout-modal { background: #111; border: 2px solid var(--primary); width: 100%; max-width: 500px; padding: 40px; border-radius: 10px; box-shadow: 0 0 50px rgba(0, 243, 255, 0.2); text-align: center; position: relative; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #666; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .hero h1 { font-size: 3rem; }
+            .course-layout, .bio-grid { grid-template-columns: 1fr; }
+            .lms-container { grid-template-columns: 1fr; }
+            .lms-sidebar { display: none; }
+            .bio-image-container { margin: 0 auto 40px; width: 80%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" onclick="showSection('landing')" class="logo-container">
+                    <img src="images/logo.png" alt="FINGADELIC Logo">
+                </a>
+
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#" onclick="showSection('landing'); toggleMenu()">Music</a></li>
+                    <li><a href="#courses" onclick="showSection('landing'); toggleMenu()">Courses</a></li>
+                    <li><a href="#about" onclick="showSection('landing'); toggleMenu()">About</a></li>
+                    <li style="margin-top:20px; font-size: 2rem; cursor:pointer;" onclick="toggleMenu()" class="mobile-only">&times;</li>
+                </ul>
+
+                <div style="display:flex; gap:15px; align-items:center;">
+                    <button id="nav-login-btn" onclick="openLogin()" class="btn btn-secondary" style="padding: 10px 20px; font-size: 0.8rem;">Student Login</button>
+                    <div class="mobile-menu-btn" onclick="toggleMenu()">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div id="landing-page">
+        
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h4 style="color: var(--primary); margin-bottom: 10px; text-shadow: 0 0 10px var(--primary);">Music Producer / Talkbox Artist</h4>
+                    <h1>The Future <br><span style="color: transparent; -webkit-text-stroke: 2px white; text-shadow: none;">Of Funk</span></h1>
+                    <p>Fingazz - a dominant authority on the modern Talkbox sound. Bridging the gap between Zapp & Roger and the future of Electronic Funk Music.</p>
+                    <div style="display:flex; gap: 25px;">
+                        <a href="#music" class="btn btn-primary">Listen to Music</a>
+                        <a href="#courses" class="btn btn-secondary">Learn Production</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="courses" class="section-padding academy-section">
+            <div class="container">
+                <div class="course-layout">
+                    <div>
+                        <h4 style="color: var(--secondary); text-shadow: 0 0 10px var(--secondary);">The Fingadelic Academy</h4>
+                        <h2 style="font-size: 3rem; margin-bottom: 20px;">Master The <br><span class="highlight" style="color: var(--neon-purple); text-shadow: 0 0 20px var(--neon-purple);">Sound</span></h2>
+                        <p style="color: #ccc; margin-bottom: 30px;">
+                            You've heard the music. Now learn how it's made. Fingazz opens up his session files to teach the production secrets behind his "Electro-Dub-Funk" style.
+                        </p>
+                    </div>
+
+                    <div class="featured-course-card">
+                        <h3 style="font-size: 2rem; color: white; margin-bottom: 10px;">Future Funk 4 All</h3>
+                        <p style="color: var(--primary); font-weight: 700;">The definitive production master class.</p>
+                        <div class="course-price">$99 <span style="font-size: 1rem; color: #aaa; font-weight: 400; text-shadow: none;">/ Lifetime Access</span></div>
+                        <ul class="course-features">
+                            <li><i class="fas fa-play" style="color:var(--secondary); margin-right:10px;"></i> Module 1: The "Manual Pocket" Drum Technique</li>
+                            <li><i class="fas fa-play" style="color:var(--secondary); margin-right:10px;"></i> Module 2: Multi-Bass Architecture</li>
+                            <li><i class="fas fa-play" style="color:var(--secondary); margin-right:10px;"></i> Module 3: Hybrid Transitions</li>
+                            <li><i class="fas fa-file-audio" style="color:var(--secondary); margin-right:10px;"></i> Bonus: "More" Project Stems</li>
+                        </ul>
+                        <div style="margin-top: 40px;">
+                            <button onclick="openCheckout()" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="music" class="section-padding">
+            <div class="container">
+                <h2 class="text-center" >Discography</span></h2>
+                <div class="album-grid">
+                    <div class="album-card">
+                        <div class="album-art"><img src="images/winning.jpg" alt="Winning"></div>
+                        <div class="album-info"><div class="album-title">Winning (Single)</div><div class="album-year">2014 • Featured Hit</div></div>
+                    </div>
+                    <div class="album-card">
+                        <div class="album-art"><img src="images/audiobio.jpg" alt="I Can Make Ya"></div>
+                        <div class="album-info"><div class="album-title">I Can Make Ya (Single)</div><div class="album-year">2013 • Featured Hit</div></div>
+                    </div>
+                    <div class="album-card">
+                        <div class="album-art"><img src="images/album5.jpg" alt="Boogie Bruthaz"></div>
+                        <div class="album-info"><div class="album-title">Boogie Bruthaz (Single)</div><div class="album-year">2014 • Featured Hit</div></div>
+                    </div>
+                    <div class="album-card">
+                        <div class="album-art"><img src="images/album7.jpg" alt="Feel ft. SERGIIO"></div>
+                        <div class="album-info"><div class="album-title">Feel (Single)</div><div class="album-year">2021 • Feat. SERGIIO</div></div>
+                    </div>
+                    <div class="album-card">
+                        <div class="album-art"><img src="images/album6.jpg" alt="7DAYZ"></div>
+                        <div class="album-info"><div class="album-title">7DAYZ</div><div class="album-year">2021 • Original Album</div></div>
+                    </div>
+                    <div class="album-card">
+                        <div class="album-art"><img src="images/visionz.jpg" alt="VI$IONZ"></div>
+                        <div class="album-info"><div class="album-title">VI$IONZ</div><div class="album-year">2016 • Original Album</div></div>
+                    </div>
+                    <div class="album-card">
+                        <div class="album-art"><img src="images/classics.jpg" alt="CLASSICS 3"></div>
+                        <div class="album-info"><div class="album-title">CLASSICS 3</div><div class="album-year">2014 • Talkbox Covers</div></div>
+                    </div>
+                    <div class="album-card">
+                        <div class="album-art"><img src="images/album8.jpg" alt="CLASSICS IV"></div>
+                        <div class="album-info"><div class="album-title">CLASSICS IV</div><div class="album-year">2023 • Talkbox Covers</div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="about" class="section-padding">
+            <div class="container bio-grid">
+                <div class="bio-image-container">
+                    <div class="bio-border-top"></div>
+                    <img src="images/fingazz-studio.jpg" alt="Fingazz" style="width: 100%; border-radius: 5px; filter: grayscale(100%) contrast(120%); position: relative; z-index: 2;">
+                    <div class="bio-border-bottom"></div>
+                </div>
+                <div>
+                    <h2 style="margin-bottom: 20px;">The <span class="highlight" style="color: var(--neon-purple);">Architect</span></h2>
+                    <p style="color: #ccc; margin-bottom: 20px;">
+                        From all corners of Southern California to global stages, Fingazz has established himself as a notable force in modern funk. As the creator of the <strong>TalkStar</strong> talkbox, he didn't just play the instrument—he evolved it.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <footer style="background:#050505; padding:60px 0; border-top:2px solid; border-image: linear-gradient(to right, var(--secondary), var(--neon-purple), var(--primary)) 1; text-align:center;">
+            <div class="container">
+                <img src="images/logo.png" alt="Fingadelic Logo" style="height:30px; opacity:0.5; margin-bottom:20px;">
+                <p style="color:#666;">&copy; 2026 Fingadelic Music. All Rights Reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <div id="lms-page" class="hidden">
+        <div class="lms-container">
+            <div class="lms-sidebar">
+                <div class="lms-progress-card">
+                    <h5 style="color:white; margin-bottom:5px;">Future Funk 4 All</h5>
+                    <div style="font-size:0.8rem; color:#888;">15% Complete</div>
+                    <div class="progress-bar"><div class="progress-fill"></div></div>
+                </div>
+
+                <div class="module-list">
+                    <div class="lms-module-header">Module 1: Rhythm Foundation</div>
+                    <div class="lesson-item active" onclick="loadLesson(0)">
+                        <div><i class="fas fa-play-circle" style="margin-right:10px;"></i> 1.1 The Manual Pocket</div>
+                    </div>
+                    <div class="lesson-item" onclick="loadLesson(1)">
+                        <div><i class="fas fa-play-circle" style="margin-right:10px;"></i> 1.2 Snare Science</div>
+                    </div>
+                    <div class="lms-module-header">Module 2: Bass Architecture</div>
+                    <div class="lesson-item locked">
+                        <div><i class="fas fa-lock" style="margin-right:10px;"></i> 2.1 Multi-Bass Theory</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lms-content">
+                <div class="video-container">
+                    <div class="video-placeholder" id="video-display">
+                        <i class="fas fa-play-circle" style="font-size: 5rem; color: var(--primary); margin-bottom: 20px;"></i>
+                        <h3 style="color:white;">Lesson 1.1: The Manual Pocket</h3>
+                    </div>
+                </div>
+                <div class="lesson-header" style="border-bottom: 1px solid #222; padding-bottom:20px;">
+                    <h2 id="lesson-title">1.1 The Manual Pocket</h2>
+                    <p style="color: #888;">Why standard quantization kills funk.</p>
+                </div>
+                <div class="resources-box">
+                    <h4 style="color:white; margin-bottom:15px;">Downloads</h4>
+                    <div class="resource-item">
+                        <i class="fas fa-file-audio" style="color:var(--secondary);"></i>
+                        <div style="color:white;">Winning_Kick_Snare.wav</div>
+                        <a href="#" style="margin-left:auto; color:var(--primary);">Download</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="checkout-modal" class="modal-overlay">
+        <div class="checkout-modal">
+            <div class="close-modal" onclick="closeCheckout()">&times;</div>
+            <h3 style="color: var(--primary); margin-bottom: 10px;">Secure Checkout</h3>
+            <p style="color: #ccc; margin-bottom: 20px;">Future Funk 4 All - Lifetime Access ($99)</p>
+            <div id="paypal-button-container"></div>
+        </div>
+    </div>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+    <script>
+        // NAVIGATION & MOBILE MENU
+        function showSection(sectionId) {
+            document.getElementById('landing-page').classList.add('hidden');
+            document.getElementById('lms-page').classList.add('hidden');
+            
+            if(sectionId === 'landing') {
+                document.getElementById('landing-page').classList.remove('hidden');
+                document.getElementById('nav-login-btn').innerText = "Student Login";
+                document.getElementById('nav-login-btn').onclick = openLogin;
+                window.scrollTo(0,0);
+            } else if(sectionId === 'lms') {
+                document.getElementById('lms-page').classList.remove('hidden');
+                document.getElementById('nav-login-btn').innerText = "Log Out";
+                document.getElementById('nav-login-btn').onclick = function(){ showSection('landing'); };
+                window.scrollTo(0,0);
+            }
+        }
+
+        function toggleMenu() {
+            const nav = document.getElementById('navLinks');
+            nav.classList.toggle('active');
+        }
+
+        // CHECKOUT LOGIC
+        function openCheckout() { document.getElementById('checkout-modal').style.display = 'flex'; }
+        function closeCheckout() { document.getElementById('checkout-modal').style.display = 'none'; }
+        
+        function openLogin() {
+            let p = prompt("Enter Student Password (hint: type 'funk')");
+            if(p && p.toLowerCase() === 'funk') showSection('lms');
+        }
+
+        // PAYPAL RENDER
+        paypal.Buttons({
+            style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal' },
+            createOrder: function(data, actions) {
+                return actions.order.create({ purchase_units: [{ amount: { value: '99.00' } }] });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    closeCheckout();
+                    alert('Welcome to the Academy, ' + details.payer.name.given_name);
+                    showSection('lms');
+                });
+            }
+        }).render('#paypal-button-container');
+
+        // LMS LOGIC
+        const lessonData = [
+            { title: "1.1 The Manual Pocket" },
+            { title: "1.2 Snare Science" }
+        ];
+
+        function loadLesson(index) {
+            const lesson = lessonData[index];
+            document.getElementById('lesson-title').innerText = lesson.title;
+            let items = document.querySelectorAll('.lesson-item');
+            items.forEach(el => el.classList.remove('active'));
+            items[index].classList.add('active');
+            document.getElementById('video-display').innerHTML = `
+                <i class="fas fa-play-circle" style="font-size: 5rem; color: var(--primary); margin-bottom: 20px;"></i>
+                <h3 style="color:white;">Now Playing: ${lesson.title}</h3>
+            `;
+        }
+    </script>
+</body>
+</html>
