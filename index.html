@@ -99,9 +99,9 @@
             box-shadow: 0 0 30px var(--secondary);
         }
 
-        /* --- HEADER & NAV --- */
+/* --- HEADER & NAV --- */
         header {
-            padding: 15px 0;
+            padding: 10px 0; /* UPDATED: Slightly larger to fit new logo */
             position: fixed;
             width: 100%;
             top: 0;
@@ -114,14 +114,20 @@
         nav { display: flex; justify-content: space-between; align-items: center; }
         
         .logo-container img { 
-            height: 50px; 
+            height: 65px; /* UPDATED: Was 50px */
             filter: drop-shadow(0 0 10px rgba(189, 0, 255, 0.6)); 
             transition:0.3s; 
         }
         .logo-container img:hover { filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.8)); }
 
-        .nav-links { display: flex; gap: 40px; }
-        .nav-links a { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: #fff; }
+.nav-links { display: flex; gap: 40px; }
+        .nav-links a { 
+            font-size: 1.15rem; /* UPDATED: Larger text */
+            font-weight: 800;   /* UPDATED: Bolder */
+            text-transform: uppercase; 
+            color: #fff; 
+            letter-spacing: 1.5px; /* UPDATED: Widens text for centered feel */
+        }
         .nav-links a:hover { color: var(--primary); text-shadow: 0 0 15px var(--primary); }
 
         /* --- MOBILE MENU STYLES --- */
@@ -380,7 +386,7 @@
 
                     <div class="album-card">
                         <div class="album-art">
-                            <img src="images/I-can-make-ya.webp" alt="I Can Make Ya">
+                            <img src="images/i-can-make-ya.webp" alt="I Can Make Ya">
                             <div class="album-overlay">
                                 <a href="https://linktr.ee/fingadelic" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a>
                             </div>
@@ -392,7 +398,7 @@
                         <div class="album-art">
                             <img src="images/boogie-bruthaz.webp" alt="Boogie Bruthaz">
                             <div class="album-overlay">
-                                <a href="https://tr.ee/e_lr66JsD6" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a>
+                                <a href="https://tr.ee/_BGZz88BNl" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a>
                             </div>
                         </div>
                         <div class="album-info"><div class="album-title">Boogie Bruthaz (Single)</div><div class="album-year">2014 • Dancer Favorite</div></div>
@@ -420,7 +426,7 @@
                     
                     <div class="album-card">
                         <div class="album-art">
-                            <img src="images/visionz.webp" alt="VI$IONZ">
+                            <img src="images/vi$ionz.webp" alt="VI$IONZ">
                             <div class="album-overlay">
                                 <a href="https://tr.ee/5xWQZn7OeV" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a>
                             </div>
@@ -468,9 +474,9 @@
             </div>
         </section>
 
-        <footer style="background:#050505; padding:60px 0; border-top:2px solid; border-image: linear-gradient(to right, var(--secondary), var(--neon-purple), var(--primary)) 1; text-align:center;">
+<footer style="background:#050505; padding:60px 0; border-top:2px solid; border-image: linear-gradient(to right, var(--secondary), var(--neon-purple), var(--primary)) 1; text-align:center;">
             <div class="container">
-                <img src="images/logo.webp" alt="Fingadelic Logo" style="height:30px; opacity:0.5; margin-bottom:20px;">
+                <img src="images/logo.png" alt="Fingadelic Logo" style="height:40px; opacity:0.5; margin-bottom:20px;">
                 <p style="color:#666;">&copy; 2026 Fingadelic Music. All Rights Reserved.</p>
             </div>
         </footer>
