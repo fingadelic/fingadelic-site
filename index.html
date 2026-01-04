@@ -98,7 +98,6 @@
             color: white;
             box-shadow: 0 0 30px var(--secondary);
         }
-        /* New Button for Gamma */
         .btn-outline-purple {
             background: transparent;
             border: 2px solid var(--neon-purple);
@@ -181,7 +180,6 @@
             background-size: cover;
             background-position: center;
         }
-        /* Scanline Overlay */
         .hero::after {
             content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
             background: repeating-linear-gradient(0deg, rgba(0,0,0,0.3) 0px, rgba(0,0,0,0.3) 1px, transparent 1px, transparent 4px);
@@ -246,13 +244,52 @@
         .resources-box { background: #111; border: 1px solid #333; padding: 20px; border-radius: 8px; margin-top: 30px; }
         .resource-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; color: #ccc; }
 
-        /* MODAL STYLES (PayPal & Gamma) */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        /* MODAL STYLES (PayPal & Slideshow) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; }
         .checkout-modal { background: #111; border: 2px solid var(--primary); width: 100%; max-width: 500px; padding: 40px; border-radius: 10px; box-shadow: 0 0 50px rgba(0, 243, 255, 0.2); text-align: center; position: relative; }
-        /* Gamma Modal Specifics */
-        .gamma-modal-box { background: #111; border: 2px solid var(--neon-purple); width: 90%; height: 90%; max-width: 1200px; border-radius: 10px; box-shadow: 0 0 50px rgba(189, 0, 255, 0.2); position: relative; overflow: hidden; }
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #666; z-index:10; }
-        .close-modal:hover { color: white; }
+        
+        /* SLIDESHOW STYLES */
+        .slideshow-box { 
+            width: 95%; max-width: 1000px; 
+            max-height: 90vh;
+            position: relative; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .slide-container {
+            width: 100%;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .slide-img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(189, 0, 255, 0.2);
+            border: 1px solid #333;
+        }
+        .close-slideshow {
+            position: absolute; top: -40px; right: 0;
+            font-size: 2rem; color: #fff; cursor: pointer;
+            z-index: 2005;
+        }
+        .close-slideshow:hover { color: var(--secondary); }
+
+        /* Navigation Buttons */
+        .prev-btn, .next-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0,0,0,0.6); color: white;
+            border: 1px solid var(--primary);
+            padding: 15px; cursor: pointer; font-size: 1.5rem;
+            z-index: 2002; transition: 0.3s;
+            border-radius: 50%;
+        }
+        .prev-btn:hover, .next-btn:hover { background: var(--primary); color: #000; }
+        .prev-btn { left: -60px; }
+        .next-btn { right: -60px; }
+        
+        /* Slide Counter */
+        .slide-counter {
+            margin-top: 15px; color: var(--text-muted); font-family: var(--font-head); font-weight: 700;
+        }
 
         /* RESPONSIVE */
         @media (max-width: 900px) {
@@ -261,6 +298,11 @@
             .lms-container { grid-template-columns: 1fr; }
             .lms-sidebar { display: none; }
             .bio-image-container { margin: 0 auto 40px; width: 80%; }
+            
+            /* Mobile Slideshow Adjustments */
+            .prev-btn { left: 10px; padding: 10px; font-size: 1rem; background: rgba(0,0,0,0.8); }
+            .next-btn { right: 10px; padding: 10px; font-size: 1rem; background: rgba(0,0,0,0.8); }
+            .close-slideshow { top: -40px; right: 10px; }
         }
     </style>
 </head>
@@ -328,8 +370,7 @@
                             <li><i class="fas fa-file-audio" style="color:var(--secondary); margin-right:10px;"></i> Bonus: "More" Project Stems</li>
                         </ul>
                         <div style="margin-top: 40px; display:grid; gap:15px;">
-                            <button onclick="openGamma()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
-                            
+                            <button onclick="openSlideshow()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
                             <button onclick="openCheckout()" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
                         </div>
                     </div>
@@ -450,18 +491,25 @@
 
     <div id="checkout-modal" class="modal-overlay">
         <div class="checkout-modal">
-            <div class="close-modal" onclick="closeCheckout()">&times;</div>
+            <div class="close-modal" onclick="closeCheckout()" style="top:15px; right:20px;">&times;</div>
             <h3 style="color: var(--primary); margin-bottom: 10px;">Secure Checkout</h3>
             <p style="color: #ccc; margin-bottom: 20px;">Future Funk 4 All - Lifetime Access ($99)</p>
             <div id="paypal-button-container"></div>
         </div>
     </div>
 
-    <div id="gamma-modal" class="modal-overlay">
-        <div class="gamma-modal-box">
-            <div class="close-modal" onclick="closeGamma()">&times;</div>
-            <iframe src="https://gamma.app/embed/vzaj5hbfv0amruh" style="width: 700px; max-width: 100%; height: 450px" allow="fullscreen" title="FUTURE FUNK 4 ALL"></iframe>
+    <div id="slideshow-modal" class="modal-overlay">
+        <div class="slideshow-box">
+            <div class="close-slideshow" onclick="closeSlideshow()">&times;</div>
+            
+            <button class="prev-btn" onclick="changeSlide(-1)">&#10094;</button>
+            <div class="slide-container">
+                <img id="slide-img" class="slide-img" src="" alt="Course Slide">
             </div>
+            <button class="next-btn" onclick="changeSlide(1)">&#10095;</button>
+            
+            <div class="slide-counter" id="slide-counter">1 / 10</div>
+        </div>
     </div>
 
     <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
@@ -493,13 +541,52 @@
         function openCheckout() { document.getElementById('checkout-modal').style.display = 'flex'; }
         function closeCheckout() { document.getElementById('checkout-modal').style.display = 'none'; }
         
-        // GAMMA LOGIC
-        function openGamma() { document.getElementById('gamma-modal').style.display = 'flex'; }
-        function closeGamma() { document.getElementById('gamma-modal').style.display = 'none'; }
-
         function openLogin() {
             let p = prompt("Enter Student Password (hint: type 'funk')");
             if(p && p.toLowerCase() === 'funk') showSection('lms');
+        }
+
+        // --- SLIDESHOW LOGIC ---
+        let currentSlideIndex = 1;
+        const totalSlides = 10;
+        const slideImg = document.getElementById('slide-img');
+        const counter = document.getElementById('slide-counter');
+        const slideModal = document.getElementById('slideshow-modal');
+
+        function openSlideshow() {
+            slideModal.style.display = 'flex';
+            currentSlideIndex = 1;
+            updateSlide();
+            // Add keyboard event listener
+            document.addEventListener('keydown', handleKeyNav);
+        }
+
+        function closeSlideshow() {
+            slideModal.style.display = 'none';
+            // Remove keyboard event listener
+            document.removeEventListener('keydown', handleKeyNav);
+        }
+
+        function changeSlide(direction) {
+            currentSlideIndex += direction;
+            if (currentSlideIndex > totalSlides) currentSlideIndex = 1;
+            if (currentSlideIndex < 1) currentSlideIndex = totalSlides;
+            updateSlide();
+        }
+
+        function updateSlide() {
+            // Points to the specific filenames requested
+            slideImg.src = `images/${currentSlideIndex}-ff4a.webp`;
+            counter.innerText = `${currentSlideIndex} / ${totalSlides}`;
+        }
+        
+        // Keyboard Navigation
+        function handleKeyNav(e) {
+            if(slideModal.style.display === 'flex') {
+                if(e.key === 'ArrowRight') changeSlide(1);
+                if(e.key === 'ArrowLeft') changeSlide(-1);
+                if(e.key === 'Escape') closeSlideshow();
+            }
         }
 
         // PAYPAL RENDER
