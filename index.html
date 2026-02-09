@@ -4,26 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FINGADELIC | The Official Site of Fingazz</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://player.vimeo.com/api/player.js"></script>
+
     <style>
         :root {
             /* Theme Variables */
             --bg-dark: #050505;
             --bg-card: #0a0a0a;
-            
-            /* The Fingadelic Palette */
             --primary: #00f3ff; /* Neon Cyan */
             --secondary: #ff0055; /* Hot Pink */
             --neon-purple: #bd00ff; /* Logo Purple */
-            
             --text-main: #ffffff;
             --text-muted: #b0b0b0;
             --font-head: 'Montserrat', sans-serif;
             --font-body: 'Roboto', sans-serif;
-            
-            /* Glow Effects */
             --box-glow: 0 0 20px rgba(189, 0, 255, 0.3), 0 0 40px rgba(0, 243, 255, 0.2);
             --text-glow: 0 0 10px rgba(189, 0, 255, 0.8), 0 0 20px rgba(0, 243, 255, 0.6);
         }
@@ -41,14 +40,7 @@
         }
 
         /* --- TYPOGRAPHY --- */
-        h1, h2, h3, h4, h5 {
-            font-family: var(--font-head);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 900;
-            text-shadow: var(--text-glow);
-        }
-
+        h1, h2, h3, h4, h5 { font-family: var(--font-head); text-transform: uppercase; letter-spacing: 1px; font-weight: 900; text-shadow: var(--text-glow); }
         a { text-decoration: none; color: inherit; transition: 0.3s; }
         ul { list-style: none; }
 
@@ -62,56 +54,26 @@
 
         /* --- BUTTONS --- */
         .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            border-radius: 4px;
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            border: none;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            text-align: center;
+            display: inline-block; padding: 12px 30px; border-radius: 4px; font-weight: 700;
+            text-transform: uppercase; cursor: pointer; border: none; font-size: 0.9rem;
+            letter-spacing: 1px; transition: all 0.3s ease; position: relative; overflow: hidden; text-align: center;
         }
         .btn-primary {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
+            background: transparent; color: var(--primary); border: 2px solid var(--primary);
             box-shadow: 0 0 15px var(--primary), inset 0 0 15px rgba(0, 243, 255, 0.2);
             text-shadow: 0 0 5px var(--primary);
         }
-        .btn-primary:hover {
-            background: var(--primary);
-            color: #000;
-            box-shadow: 0 0 30px var(--primary), 0 0 50px var(--neon-purple);
-            text-shadow: none;
-        }
+        .btn-primary:hover { background: var(--primary); color: #000; box-shadow: 0 0 30px var(--primary); text-shadow: none; }
         .btn-secondary {
-            background: transparent;
-            border: 2px solid var(--secondary);
-            color: var(--secondary);
+            background: transparent; border: 2px solid var(--secondary); color: var(--secondary);
             box-shadow: 0 0 15px var(--secondary);
         }
-        .btn-secondary:hover {
-            background: var(--secondary);
-            color: white;
-            box-shadow: 0 0 30px var(--secondary);
-        }
+        .btn-secondary:hover { background: var(--secondary); color: white; box-shadow: 0 0 30px var(--secondary); }
         .btn-outline-purple {
-            background: transparent;
-            border: 2px solid var(--neon-purple);
-            color: var(--neon-purple);
+            background: transparent; border: 2px solid var(--neon-purple); color: var(--neon-purple);
             box-shadow: 0 0 15px rgba(189, 0, 255, 0.3);
-            text-align: center;
         }
-        .btn-outline-purple:hover {
-            background: var(--neon-purple);
-            color: white;
-            box-shadow: 0 0 30px var(--neon-purple);
-        }
+        .btn-outline-purple:hover { background: var(--neon-purple); color: white; box-shadow: 0 0 30px var(--neon-purple); }
 
         /* --- FORM STYLES --- */
         .form-group { margin-bottom: 25px; text-align: left; }
@@ -120,127 +82,68 @@
             width: 100%; padding: 15px; background: #080808; border: 1px solid #333;
             border-radius: 4px; color: white; font-family: var(--font-body); font-size: 1rem; transition: 0.3s;
         }
-        .form-input:focus, .form-textarea:focus, .form-select:focus {
-            border-color: var(--primary); outline: none; box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); background: #111;
-        }
-        .form-textarea { resize: vertical; min-height: 150px; }
+        .form-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); background: #111; }
 
-
-        /* --- HEADER & NAV (Restored from your file) --- */
+        /* --- HEADER --- */
         header {
-            padding: 20px 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            background: rgba(5, 5, 5, 0.9);
-            border-bottom: 2px solid;
+            padding: 20px 0; position: fixed; width: 100%; top: 0; z-index: 1000;
+            background: rgba(5, 5, 5, 0.9); border-bottom: 2px solid;
             border-image: linear-gradient(to right, var(--neon-purple), var(--primary), var(--secondary)) 1;
             backdrop-filter: blur(15px);
         }
         nav { display: flex; justify-content: space-between; align-items: center; }
-
-        .header-logo-text {
-            font-family: var(--font-head);
-            font-weight: 900;
-            font-size: 1.5rem;
-            color: var(--text-main);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: var(--text-glow);
-        }
-
+        .header-logo-text { font-family: var(--font-head); font-weight: 900; font-size: 1.5rem; text-transform: uppercase; text-shadow: var(--text-glow); }
         .nav-links { display: flex; gap: 40px; }
-        .nav-links a { 
-            font-size: 1rem; font-weight: 700; text-transform: uppercase; color: #fff; letter-spacing: 2px;
-        }
+        .nav-links a { font-size: 1rem; font-weight: 700; text-transform: uppercase; color: #fff; letter-spacing: 2px; }
         .nav-links a:hover { color: var(--primary); text-shadow: 0 0 15px var(--primary); }
         .mobile-only { display: none; }
         .mobile-menu-btn { display: none; font-size: 1.5rem; cursor: pointer; color: white; margin-left: 20px; }
 
-        /* ============================
-           SECTION: HERO (Restored from your file)
-           ============================ */
-        
+        /* --- HERO --- */
         .hero {
-            min-height: 100vh;
-            height: auto; 
-            display: flex;
-            align-items: center;
-            position: relative;
-            background-color: #000;
-            /* Using the GitHub Raw Image you provided */
+            min-height: 100vh; display: flex; align-items: center; position: relative; background-color: #000;
             background-image: url('https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/fingadelic-bg.webp');
-            background-size: cover;
-            background-position: center;
-            padding-top: 120px; 
-            padding-bottom: 50px;
+            background-size: cover; background-position: center; padding-top: 120px; padding-bottom: 50px;
         }
-        
         .hero-content { position: relative; z-index: 2; max-width: 800px; width: 100%; }
-        
-        .hero-logo {
-            max-width: 500px; width: 100%; height: auto; margin-bottom: 30px;
-            filter: drop-shadow(0 0 20px rgba(189, 0, 255, 0.4));
-        }
+        .hero-logo { max-width: 500px; width: 100%; height: auto; margin-bottom: 30px; filter: drop-shadow(0 0 20px rgba(189, 0, 255, 0.4)); }
+        .hero-text-box { background: rgba(0, 0, 0, 0.6); padding: 40px; border-radius: 12px; backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .hero h1 { font-size: 4.5rem; line-height: 0.9; margin-bottom: 20px; text-shadow: 0 0 20px rgba(189, 0, 255, 0.8), 0 0 40px rgba(0, 243, 255, 0.6); }
 
-        .hero-text-box {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 40px;
-            border-radius: 12px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .hero h1 { 
-            font-size: 4.5rem; line-height: 0.9; margin-bottom: 20px; 
-            text-shadow: 0 0 20px rgba(189, 0, 255, 0.8), 0 0 40px rgba(0, 243, 255, 0.6); 
-        }
-        
-        .hero p { 
-            font-size: 1.2rem; color: #ddd; margin-bottom: 40px; 
-            border-left: 3px solid var(--secondary); padding-left: 20px; 
-            position: relative; z-index: 2;
-        }
-
-        /* DISC SECTION */
+        /* --- COURSE & ALBUMS --- */
         .album-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 50px; }
         .album-card { background: var(--bg-card); border-radius: 8px; border: 1px solid #222; overflow: hidden; transition: 0.4s; position: relative; }
         .album-card:hover { border-color: var(--primary); box-shadow: 0 0 30px rgba(0, 243, 255, 0.2); transform: translateY(-5px); }
         .album-art { width: 100%; aspect-ratio: 1/1; background: #111; overflow: hidden; position: relative; }
         .album-art img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; filter: grayscale(50%); }
         .album-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center;
-            opacity: 0; transition: 0.3s; backdrop-filter: blur(3px);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7);
+            display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; backdrop-filter: blur(3px);
         }
         .album-card:hover .album-overlay { opacity: 1; }
         .album-card:hover .album-art img { filter: grayscale(0%); transform: scale(1.05); }
         .album-info { padding: 20px; background: #0f0f0f; }
 
-        /* ACADEMY SECTION */
         .academy-section { background: #080808; border-top: 2px solid var(--neon-purple); border-bottom: 2px solid var(--secondary); box-shadow: var(--box-glow); }
         .course-layout { display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; align-items: center; }
         .featured-course-card { 
-            background: linear-gradient(145deg, #111, #0a0a0a); 
-            border: 2px solid; border-image: linear-gradient(to bottom right, var(--primary), var(--neon-purple)) 1; 
+            background: linear-gradient(145deg, #111, #0a0a0a); border: 2px solid;
+            border-image: linear-gradient(to bottom right, var(--primary), var(--neon-purple)) 1; 
             padding: 40px; position: relative; box-shadow: var(--box-glow);
         }
         .course-price { font-size: 3rem; font-weight: 900; color: white; margin: 20px 0; text-shadow: 0 0 15px var(--primary); }
         .course-features li { margin-bottom: 12px; color: #ccc; font-size: 1rem; }
-        
-        /* BIO & CONTACT SECTIONS */
+
+        /* --- BIO & CONTACT --- */
         .bio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
         .bio-image-container { position: relative; z-index: 1; }
         .bio-border-top { position: absolute; top: -30px; left: -30px; width: 150px; height: 150px; z-index: -1; border-top: 5px solid var(--primary); border-left: 5px solid var(--neon-purple); }
         .bio-border-bottom { position: absolute; bottom: -30px; right: -30px; width: 150px; height: 150px; z-index: -1; border-bottom: 5px solid var(--secondary); border-right: 5px solid var(--primary); }
-
         .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
         .contact-info-box { padding: 30px; background: #0a0a0a; border: 1px solid #222; margin-bottom: 20px; display: flex; align-items: center; gap: 20px; transition: 0.3s; }
         .contact-info-box:hover { border-color: var(--secondary); transform: translateX(10px); }
-        .contact-icon { font-size: 1.5rem; color: var(--secondary); }
 
-        /* LMS */
+        /* --- LMS STYLES --- */
         .lms-container { display: grid; grid-template-columns: 350px 1fr; height: 100vh; padding-top: 85px; }
         .lms-sidebar { background: #080808; border-right: 1px solid #333; overflow-y: auto; display: flex; flex-direction: column; }
         .lms-progress-card { padding: 20px; background: #111; border-bottom: 1px solid #333; }
@@ -251,55 +154,30 @@
         .lesson-item { padding: 15px 20px; cursor: pointer; border-left: 3px solid transparent; transition: 0.2s; display: flex; align-items: center; color: #ccc; }
         .lesson-item:hover { background: #151515; color: white; }
         .lesson-item.active { background: rgba(0, 243, 255, 0.05); border-left: 3px solid var(--primary); color: var(--primary); }
-        .lesson-item.locked { opacity: 0.5; cursor: not-allowed; }
         
         .lms-content { padding: 40px; background: #050505; overflow-y: auto; }
         .video-container { width: 100%; aspect-ratio: 16 / 9; background: black; border: 1px solid #333; margin-bottom: 30px; position: relative; }
         .video-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; background: radial-gradient(circle, #1a1a1a, #000); }
         .resources-box { background: #111; border: 1px solid #333; padding: 20px; border-radius: 8px; margin-top: 30px; }
-        .resource-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; color: #ccc; }
 
-        /* MODALS */
+        /* --- MODALS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center; }
         .checkout-modal { background: #0a0a0a; border: 2px solid var(--primary); width: 100%; max-width: 500px; padding: 40px; border-radius: 10px; box-shadow: 0 0 50px rgba(0, 243, 255, 0.2); text-align: center; position: relative; }
         .login-modal-box { background: #0a0a0a; border: 2px solid var(--secondary); width: 100%; max-width: 400px; padding: 40px; border-radius: 10px; box-shadow: 0 0 50px rgba(255, 0, 85, 0.2); text-align: center; position: relative; }
         
-        /* SLIDESHOW STYLES */
-        .slideshow-box { width: 95%; max-width: 1000px; max-height: 90vh; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .slide-container { width: 100%; display: flex; justify-content: center; align-items: center; }
-        .slide-img { max-width: 100%; max-height: 80vh; border-radius: 8px; box-shadow: 0 0 30px rgba(189, 0, 255, 0.2); border: 1px solid #333; }
-        .close-slideshow { position: absolute; top: -40px; right: 0; font-size: 2rem; color: #fff; cursor: pointer; z-index: 2005; }
-        .close-slideshow:hover { color: var(--secondary); }
-        .prev-btn, .next-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: white; border: 1px solid var(--primary); padding: 15px; cursor: pointer; font-size: 1.5rem; z-index: 2002; transition: 0.3s; border-radius: 50%; }
-        .prev-btn:hover, .next-btn:hover { background: var(--primary); color: #000; }
-        .prev-btn { left: -60px; } .next-btn { right: -60px; }
-        .slide-counter { margin-top: 15px; color: var(--text-muted); font-family: var(--font-head); font-weight: 700; }
-        
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #666; transition:0.3s;}
         .close-modal:hover { color: white; }
 
-        /* --- RESPONSIVE MEDIA QUERIES --- */
+        /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
             .mobile-only { display: block; }
             .header-logo-text { font-size: 1.2rem; }
             .nav-links { position: fixed; top: 0; right: -100%; height: 100vh; width: 70%; background: #000; border-left: 2px solid var(--primary); flex-direction: column; justify-content: center; align-items: center; transition: 0.3s; z-index: 1000; }
             .nav-links.active { right: 0; display: flex; }
             .mobile-menu-btn { display: block; }
-
-            .hero { padding-top: 120px; padding-bottom: 50px; }
-            .hero h1 { font-size: 2.8rem; }
-            .hero p { font-size: 1rem; }
-            .hero-text-box { padding: 25px; }
-            .hero-logo { max-width: 100%; }
-            
             .course-layout, .bio-grid, .contact-grid { grid-template-columns: 1fr; }
             .lms-container { grid-template-columns: 1fr; }
-            .lms-sidebar { display: none; }
-            .bio-image-container { margin: 0 auto 40px; width: 80%; }
-            
-            .prev-btn { left: 10px; padding: 10px; font-size: 1rem; background: rgba(0,0,0,0.8); }
-            .next-btn { right: 10px; padding: 10px; font-size: 1rem; background: rgba(0,0,0,0.8); }
-            .close-slideshow { top: -40px; right: 10px; }
+            .lms-sidebar { display: none; } /* Hide sidebar on mobile for now */
         }
     </style>
 </head>
@@ -329,12 +207,10 @@
     </header>
 
     <div id="landing-page">
-        
         <section class="hero">
             <div class="container">
                 <div class="hero-content">
                     <img src="https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/fingadelic-text.png" alt="Fingadelic Logo" class="hero-logo">
-
                     <div class="hero-text-box">
                         <h4 style="color: var(--primary); margin-bottom: 10px; text-shadow: 0 0 10px var(--primary);">Music Producer / Talkbox Artist</h4>
                         <h1>The Future <br><span style="color: transparent; -webkit-text-stroke: 2px white; text-shadow: none;">Of Funk</span></h1>
@@ -344,7 +220,6 @@
                             <a href="#courses" class="btn btn-secondary">Learn Production</a>
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>
@@ -371,7 +246,6 @@
                             <li><i class="fas fa-upload" style="color:var(--secondary); margin-right:10px;"></i> Real feedback and support</li>
                         </ul>
                         <div style="margin-top: 40px; display:grid; gap:15px;">
-                            <button onclick="openSlideshow()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
                             <button onclick="openCheckout()" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
                         </div>
                     </div>
@@ -384,38 +258,10 @@
                 <h2 class="text-center">Selected <span class="highlight-pink">Discography</span></h2>
                 <div class="album-grid">
                     <div class="album-card">
-                        <div class="album-art"><img src="images/winning.webp" alt="Winning"><div class="album-overlay"><a href="https://tr.ee/LggaiH9ung" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
-                        <div class="album-info"><div class="album-title">Winning (Single)</div><div class="album-year">2014 • Dancer Favorite</div></div>
+                        <div class="album-art"><img src="images/winning.webp" alt="Winning"><div class="album-overlay"><a href="#" class="btn btn-primary">Stream</a></div></div>
+                        <div class="album-info"><div class="album-title">Winning</div><div class="album-year">2014 • Single</div></div>
                     </div>
-                    <div class="album-card">
-                        <div class="album-art"><img src="images/i-can-make-ya.webp" alt="I Can Make Ya"><div class="album-overlay"><a href="https://tr.ee/_BGZz88BNl" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
-                        <div class="album-info"><div class="album-title">I Can Make Ya</div><div class="album-year">2013 • Legendary Tribute</div></div>
                     </div>
-                    <div class="album-card">
-                        <div class="album-art"><img src="images/boogie-bruthaz.webp" alt="Boogie Bruthaz"><div class="album-overlay"><a href="https://tr.ee/_BGZz88BNl" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
-                        <div class="album-info"><div class="album-title">Boogie Bruthaz</div><div class="album-year">2014 • Dancer Favorite</div></div>
-                    </div>
-                    <div class="album-card">
-                        <div class="album-art"><img src="images/feel.webp" alt="Feel"><div class="album-overlay"><a href="https://tr.ee/dEHLrTTly_" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
-                        <div class="album-info"><div class="album-title">Feel (Single)</div><div class="album-year">2021 • Feat. SERGIIO</div></div>
-                    </div>
-                    <div class="album-card">
-                        <div class="album-art"><img src="images/7dayz.webp" alt="7DAYZ"><div class="album-overlay"><a href="https://tr.ee/Io3HnYEgN3" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
-                        <div class="album-info"><div class="album-title">7DAYZ</div><div class="album-year">2021 • Original Album</div></div>
-                    </div>
-                    <div class="album-card">
-                        <div class="album-art"><img src="images/vi$ionz.webp" alt="VI$IONZ"><div class="album-overlay"><a href="https://tr.ee/5xWQZn7OeV" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
-                        <div class="album-info"><div class="album-title">VI$IONZ</div><div class="album-year">2016 • Original Album</div></div>
-                    </div>
-                    <div class="album-card">
-                        <div class="album-art"><img src="images/classics3.webp" alt="CLASSICS 3"><div class="album-overlay"><a href="https://tr.ee/zizhQob7cd" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
-                        <div class="album-info"><div class="album-title">CLASSICS 3</div><div class="album-year">2014 • Talkbox Tributes</div></div>
-                    </div>
-                    <div class="album-card">
-                        <div class="album-art"><img src="images/classics-iv.webp" alt="CLASSICS IV"><div class="album-overlay"><a href="https://tr.ee/UEmaz4Mvvx" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
-                        <div class="album-info"><div class="album-title">CLASSICS IV</div><div class="album-year">2023 • Talkbox Tributes</div></div>
-                    </div>
-                </div>
             </div>
         </section>
         
@@ -429,43 +275,14 @@
                 <div>
                     <h2 style="margin-bottom: 20px;">The <span class="highlight" style="color: var(--neon-purple);">Architect</span></h2>
                     <p style="color: #ccc; margin-bottom: 20px;">
-                        From all corners of Southern California to global stages, Fingazz has established himself as a notable force in modern funk. As the creator of the <strong>TalkStar</strong> talkbox, he didn't just play the instrument—he evolved it.
+                        From all corners of Southern California to global stages, Fingazz has established himself as a notable force in modern funk. Creator of the <strong>TalkStar</strong> talkbox.
                     </p>
-                </div>
-            </div>
-        </section>
-
-        <section id="contact" class="section-padding" style="background: #080808; border-top: 2px solid #222;">
-            <div class="container">
-                <h2 class="text-center" style="margin-bottom: 60px;">Book The <span class="highlight-pink">Architect</span></h2>
-                <div class="contact-grid">
-                    <div>
-                        <p style="color: #ccc; margin-bottom: 30px;">For serious inquiries regarding booking, production, remixes, or Talkbox features.</p>
-                        <div class="contact-info-box">
-                            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                            <div><h4 style="font-size: 1rem; color: white; margin-bottom: 5px;">Management / Booking</h4><div style="color: #888;">management@fingadelic.com</div></div>
-                        </div>
-                        <div class="contact-info-box">
-                            <div class="contact-icon"><i class="fas fa-music"></i></div>
-                            <div><h4 style="font-size: 1rem; color: white; margin-bottom: 5px;">Production Inquiries</h4><div style="color: #888;">studio@fingadelic.com</div></div>
-                        </div>
-                    </div>
-                    <div>
-                        <form onsubmit="event.preventDefault(); alert('Message Sent!');">
-                            <div class="form-group"><label class="form-label">Name</label><input type="text" class="form-input" placeholder="Your Name or Agency"></div>
-                            <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="contact@email.com"></div>
-                            <div class="form-group"><label class="form-label">Subject</label><select class="form-select"><option>Booking Request</option><option>Collaboration / Feature</option><option>Press / Media</option><option>General Inquiry</option></select></div>
-                            <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" placeholder="Tell us about your project..."></textarea></div>
-                            <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
-                        </form>
-                    </div>
                 </div>
             </div>
         </section>
 
         <footer style="background:#050505; padding:60px 0; border-top:2px solid; border-image: linear-gradient(to right, var(--secondary), var(--neon-purple), var(--primary)) 1; text-align:center;">
             <div class="container">
-                <img src="images/logo.png" alt="Fingadelic Logo" style="height:40px; opacity:0.5; margin-bottom:20px;">
                 <p style="color:#666;">&copy; 2026 Fingadelic Music. All Rights Reserved.</p>
             </div>
         </footer>
@@ -476,21 +293,28 @@
             <div class="lms-sidebar">
                 <div class="lms-progress-card">
                     <h5 style="color:white; margin-bottom:5px;">Future Funk 4 All</h5>
-                    <div style="font-size:0.8rem; color:#888;">15% Complete</div>
+                    <div style="font-size:0.8rem; color:#888;">Student Access</div>
                     <div class="progress-bar"><div class="progress-fill"></div></div>
                 </div>
-                <div class="module-list">
-                    <div class="lms-module-header">Module 1: Rhythm Foundation</div>
-                    <div class="lesson-item active" onclick="loadLesson(0)"><div><i class="fas fa-play-circle" style="margin-right:10px;"></i> 1.1 The Manual Pocket</div></div>
-                    <div class="lesson-item" onclick="loadLesson(1)"><div><i class="fas fa-play-circle" style="margin-right:10px;"></i> 1.2 Snare Science</div></div>
-                    <div class="lms-module-header">Module 2: Bass Architecture</div>
-                    <div class="lesson-item locked"><div><i class="fas fa-lock" style="margin-right:10px;"></i> 2.1 Multi-Bass Theory</div></div>
-                </div>
+                <div class="module-list" id="lesson-list-container">
+                    </div>
             </div>
+            
             <div class="lms-content">
-                <div class="video-container"><div class="video-placeholder" id="video-display"><i class="fas fa-play-circle" style="font-size: 5rem; color: var(--primary); margin-bottom: 20px;"></i><h3 style="color:white;">Lesson 1.1: The Manual Pocket</h3></div></div>
-                <div class="lesson-header" style="border-bottom: 1px solid #222; padding-bottom:20px;"><h2 id="lesson-title">1.1 The Manual Pocket</h2><p style="color: #888;">Why standard quantization kills funk.</p></div>
-                <div class="resources-box"><h4 style="color:white; margin-bottom:15px;">Downloads</h4><div class="resource-item"><i class="fas fa-file-audio" style="color:var(--secondary);"></i><div style="color:white;">Winning_Kick_Snare.wav</div><a href="#" style="margin-left:auto; color:var(--primary);">Download</a></div></div>
+                <div class="video-container">
+                    <div class="video-placeholder" id="video-display">
+                        <i class="fas fa-play-circle" style="font-size: 5rem; color: var(--primary); margin-bottom: 20px;"></i>
+                        <h3 style="color:white;">Select a Lesson</h3>
+                    </div>
+                </div>
+                <div class="lesson-header" style="border-bottom: 1px solid #222; padding-bottom:20px;">
+                    <h2 id="lesson-title">Welcome to the Course</h2>
+                    <p id="lesson-desc" style="color: #888;">Select a lesson from the sidebar to begin.</p>
+                </div>
+                <div class="resources-box">
+                    <h4 style="color:white; margin-bottom:15px;">Downloads</h4>
+                    <div class="resource-item" style="color:#888;">Resources for this lesson will appear here.</div>
+                </div>
             </div>
         </div>
     </div>
@@ -508,118 +332,185 @@
         <div class="login-modal-box">
             <div class="close-modal" onclick="closeLoginModal()">&times;</div>
             <h3 style="color: var(--secondary); margin-bottom: 10px;">Student Portal</h3>
-            <p style="color: #ccc; margin-bottom: 30px; font-size: 0.9rem;">Enter your access code to enter the Academy.</p>
-            <div class="form-group"><input type="password" id="student-pass" class="form-input" placeholder="Enter Password" style="text-align: center;"></div>
+            <p style="color: #ccc; margin-bottom: 30px; font-size: 0.9rem;">Enter your email to access the Academy.</p>
+            
+            <div class="form-group">
+                <label class="form-label" style="text-align:left;">Email</label>
+                <input type="email" id="student-email" class="form-input" placeholder="student@email.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label" style="text-align:left;">Password</label>
+                <input type="password" id="student-pass" class="form-input" placeholder="Password">
+            </div>
+            
             <button onclick="attemptLogin()" class="btn btn-secondary" style="width: 100%;">Enter Academy</button>
-            <p id="login-error" class="hidden" style="color: var(--secondary); margin-top: 15px; font-size: 0.9rem;">Incorrect Password. Hint: "funk"</p>
+            <p id="login-error" class="hidden" style="color: var(--secondary); margin-top: 15px; font-size: 0.9rem;"></p>
         </div>
     </div>
 
-    <div id="slideshow-modal" class="modal-overlay">
-        <div class="slideshow-box">
-            <div class="close-slideshow" onclick="closeSlideshow()">&times;</div>
-            <button class="prev-btn" onclick="changeSlide(-1)">&#10094;</button>
-            <div class="slide-container"><img id="slide-img" class="slide-img" src="" alt="Course Slide"></div>
-            <button class="next-btn" onclick="changeSlide(1)">&#10095;</button>
-            <div class="slide-counter" id="slide-counter">1 / 10</div>
-        </div>
-    </div>
-
-    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=ARUhmNs263RFnw4W-3Tve9UohhlRTFn-JV-jf5nfAMe0Q42RtknFVt3Ui0KIXpWPqUrF-yYkrktXVQ7m"></script>
+    
     <script>
-        // NAVIGATION & MOBILE MENU
-        function showSection(sectionId) {
+        // --- 1. CONFIGURATION (REPLACE THESE KEYS) ---
+        const supabaseUrl = 'https://fiqeqrtywxvrdkpyiebz.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpcWVxcnR5d3h2cmRrcHlpZWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA1ODY3NDcsImV4cCI6MjA4NjE2Mjc0N30.FiUKSifWssU-oloDyKa54IJCsjkiaq79vNZ4dKazCM8';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // --- 2. LESSON DATA (REPLACE VIMEO IDs) ---
+        const lessonData = [
+            { id: "1162224336", title: "Section 1 - Introduction", desc: "Let's get it crackin'!!" },
+            { id: "1162224336", title: "Section 2 - The Talkbox", desc: "Learn how to use the Talkbox in your productions." },
+            { id: "1162224336", title: "Section 3 - Drums & Groove", desc: "Crafting the perfect Future Funk drum patterns." },
+            { id: "1162224336", title: "Section 4 - Bass & Harmony", desc: "Designing those thick, funky basslines and lush chords." },
+            { id: "1162224336", title: "Section 5 - Arrangement & Mixing", desc: "Putting it all together and making it sound amazing." }           
+        ];
+
+        // --- 3. STATE MANAGEMENT ---
+        let vimeoPlayer = null;
+
+        // Populate Sidebar
+        const lessonList = document.getElementById('lesson-list-container');
+        lessonData.forEach((lesson, index) => {
+            const div = document.createElement('div');
+            div.className = 'lesson-item';
+            div.innerHTML = `<div><i class="fas fa-play-circle" style="margin-right:10px;"></i> ${lesson.title}</div>`;
+            div.onclick = () => loadLesson(index);
+            lessonList.appendChild(div);
+        });
+
+        // --- 4. NAVIGATION LOGIC ---
+        async function showSection(sectionId) {
             document.getElementById('landing-page').classList.add('hidden');
             document.getElementById('lms-page').classList.add('hidden');
+            
             if(sectionId === 'landing') {
                 document.getElementById('landing-page').classList.remove('hidden');
-                document.getElementById('nav-login-btn').innerText = "Student Login";
-                document.getElementById('nav-login-btn').onclick = openLoginModal;
                 window.scrollTo(0,0);
-            } else if(sectionId === 'lms') {
-                document.getElementById('lms-page').classList.remove('hidden');
-                document.getElementById('nav-login-btn').innerText = "Log Out";
-                document.getElementById('nav-login-btn').onclick = function(){ showSection('landing'); };
-                window.scrollTo(0,0);
+            } 
+            else if(sectionId === 'lms') {
+                // SECURITY CHECK
+                const { data: { session } } = await supabase.auth.getSession();
+                if(session) {
+                    // Check Database for 'has_access'
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('has_access')
+                        .eq('id', session.user.id)
+                        .single();
+
+                    if (profile && profile.has_access) {
+                        document.getElementById('lms-page').classList.remove('hidden');
+                        window.scrollTo(0,0);
+                        initVimeo();
+                    } else {
+                        alert("Please purchase the course to access the content.");
+                        showSection('landing');
+                        openCheckout();
+                    }
+                } else {
+                    alert("Please log in first.");
+                    openLoginModal();
+                }
             }
         }
-        function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
 
-        // MODAL LOGIC
-        function openCheckout() { document.getElementById('checkout-modal').style.display = 'flex'; }
-        function closeCheckout() { document.getElementById('checkout-modal').style.display = 'none'; }
-        
-        function openLoginModal() { 
-            document.getElementById('login-modal').style.display = 'flex'; 
-            document.getElementById('login-error').classList.add('hidden');
-            document.getElementById('student-pass').value = '';
-        }
-        function closeLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
+        // --- 5. AUTHENTICATION LOGIC ---
+        async function attemptLogin() {
+            const email = document.getElementById('student-email').value;
+            const password = document.getElementById('student-pass').value;
+            const errorMsg = document.getElementById('login-error');
 
-        function attemptLogin() {
-            if(document.getElementById('student-pass').value.toLowerCase() === 'funk') {
-                closeLoginModal(); showSection('lms');
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                errorMsg.innerText = error.message;
+                errorMsg.classList.remove('hidden');
             } else {
-                document.getElementById('login-error').classList.remove('hidden');
+                closeLoginModal();
+                showSection('lms');
             }
         }
 
-        // SLIDESHOW LOGIC
-        let currentSlideIndex = 1;
-        const totalSlides = 10;
-        const slideImg = document.getElementById('slide-img');
-        const counter = document.getElementById('slide-counter');
-        const slideModal = document.getElementById('slideshow-modal');
-
-        function openSlideshow() {
-            slideModal.style.display = 'flex';
-            currentSlideIndex = 1;
-            updateSlide();
-            document.addEventListener('keydown', handleKeyNav);
-        }
-        function closeSlideshow() {
-            slideModal.style.display = 'none';
-            document.removeEventListener('keydown', handleKeyNav);
-        }
-        function changeSlide(direction) {
-            currentSlideIndex += direction;
-            if (currentSlideIndex > totalSlides) currentSlideIndex = 1;
-            if (currentSlideIndex < 1) currentSlideIndex = totalSlides;
-            updateSlide();
-        }
-        function updateSlide() {
-            slideImg.src = `images/${currentSlideIndex}-ff4a.webp`;
-            counter.innerText = `${currentSlideIndex} / ${totalSlides}`;
-        }
-        function handleKeyNav(e) {
-            if(slideModal.style.display === 'flex') {
-                if(e.key === 'ArrowRight') changeSlide(1);
-                if(e.key === 'ArrowLeft') changeSlide(-1);
-                if(e.key === 'Escape') closeSlideshow();
+        function updateNavButton(session) {
+            const btn = document.getElementById('nav-login-btn');
+            if (session) {
+                btn.innerText = "Log Out";
+                btn.onclick = async () => {
+                    await supabase.auth.signOut();
+                    window.location.reload();
+                };
+            } else {
+                btn.innerText = "Student Login";
+                btn.onclick = openLoginModal;
             }
         }
 
-        // PAYPAL RENDER
-        paypal.Buttons({
-            style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'paypal' },
-            createOrder: function(data, actions) { return actions.order.create({ purchase_units: [{ amount: { value: '99.00' } }] }); },
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    closeCheckout(); alert('Welcome to the Academy, ' + details.payer.name.given_name); showSection('lms');
+        // Check session on load
+        supabase.auth.getSession().then(({ data: { session } }) => updateNavButton(session));
+        supabase.auth.onAuthStateChange((_event, session) => updateNavButton(session));
+
+        // --- 6. VIMEO LOGIC ---
+        function initVimeo() {
+            if (!vimeoPlayer) {
+                const container = document.getElementById('video-display');
+                container.innerHTML = ""; // Clear placeholder
+                vimeoPlayer = new Vimeo.Player('video-display', {
+                    id: lessonData[0].id,
+                    width: 640,
+                    responsive: true
                 });
+                loadLesson(0); // Load first lesson text
             }
-        }).render('#paypal-button-container');
+        }
 
-        // LMS LOGIC
-        const lessonData = [ { title: "1.1 The Manual Pocket" }, { title: "1.2 Snare Science" } ];
         function loadLesson(index) {
             const lesson = lessonData[index];
             document.getElementById('lesson-title').innerText = lesson.title;
-            let items = document.querySelectorAll('.lesson-item');
-            items.forEach(el => el.classList.remove('active'));
-            items[index].classList.add('active');
-            document.getElementById('video-display').innerHTML = `<i class="fas fa-play-circle" style="font-size: 5rem; color: var(--primary); margin-bottom: 20px;"></i><h3 style="color:white;">Now Playing: ${lesson.title}</h3>`;
+            document.getElementById('lesson-desc').innerText = lesson.desc;
+
+            // Update Active UI
+            document.querySelectorAll('.lesson-item').forEach((el, i) => {
+                if (i === index) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+
+            if (vimeoPlayer) {
+                vimeoPlayer.loadVideo(lesson.id).catch(err => console.error("Vimeo Error:", err));
+            }
         }
+
+        // --- 7. PAYPAL LOGIC ---
+        paypal.Buttons({
+            style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        description: "Future Funk 4 All - Lifetime Access",
+                        amount: { value: '99.00' }
+                    }]
+                });
+            },
+            onApprove: async function(data, actions) {
+                const details = await actions.order.capture();
+                const { data: { user } } = await supabase.auth.getUser();
+                
+                if (user) {
+                    await supabase.from('profiles').update({ has_access: true }).eq('id', user.id);
+                    alert('Payment Successful! Welcome to the Academy.');
+                    closeCheckout();
+                    showSection('lms');
+                } else {
+                    alert('Payment received but you are not logged in. Please contact support.');
+                }
+            }
+        }).render('#paypal-button-container');
+
+        // --- 8. UI HELPERS ---
+        function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
+        function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
+        function closeLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
+        function openCheckout() { document.getElementById('checkout-modal').style.display = 'flex'; }
+        function closeCheckout() { document.getElementById('checkout-modal').style.display = 'none'; }
     </script>
 </body>
 </html>
