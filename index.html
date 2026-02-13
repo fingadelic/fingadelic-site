@@ -72,7 +72,7 @@
         .album-card:hover { border-color: var(--primary); box-shadow: 0 0 30px rgba(0, 243, 255, 0.2); transform: translateY(-5px); }
         .album-art { width: 100%; aspect-ratio: 1/1; background: #111; overflow: hidden; position: relative; }
         .album-art img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; filter: grayscale(50%); }
-        .album-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; backdrop-filter: blur(3px); }
+        .album-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; opacity: 0; transition: 0.3s; backdrop-filter: blur(3px); }
         .album-card:hover .album-overlay { opacity: 1; }
         .album-card:hover .album-art img { filter: grayscale(0%); transform: scale(1.05); }
         .album-info { padding: 20px; background: #0f0f0f; }
@@ -129,9 +129,33 @@
             .nav-links.active { right: 0; display: flex; }
             .mobile-menu-btn { display: block; }
             .hero h1 { font-size: 2.8rem; }
-            .course-layout, .album-grid { grid-template-columns: 1fr; }
-            .lms-container { grid-template-columns: 1fr; }
-            .lms-sidebar { display: none; }
+            .course-layout, .album-grid, .contact-grid { grid-template-columns: 1fr; }
+            
+            /* UPDATED: Compact padding for mobile */
+            .section-padding { padding: 50px 0; }
+            .contact-grid { gap: 30px; }
+            
+            /* UPDATED: LMS Mobile Styles */
+            .lms-container { 
+                display: flex; 
+                flex-direction: column; 
+                height: auto; 
+                padding-top: 60px;
+            }
+            .lms-content { 
+                order: 1; 
+                padding: 20px;
+                height: auto;
+                overflow: visible;
+            }
+            .lms-sidebar { 
+                display: block !important; 
+                order: 2;
+                border-right: none;
+                border-top: 1px solid #333;
+                height: auto;
+                max-height: 500px;
+            }
         }
     </style>
 </head>
@@ -207,35 +231,35 @@
                 <h2 class="text-center">Selected <span class="highlight-pink">Discography</span></h2>
                 <div class="album-grid">
                     <div class="album-card">
-                        <div class="album-art"><img src="images/winning.webp" alt="Winning"><div class="album-overlay"><a href="https://tr.ee/LggaiH9ung" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
+                        <div class="album-art"><img src="https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/winning.webp" alt="Winning"><div class="album-overlay"><a href="https://tr.ee/LggaiH9ung" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
                         <div class="album-info"><div class="album-title">Winning (Single)</div><div class="album-year">2014 • Dancer Favorite</div></div>
                     </div>
                     <div class="album-card">
-                        <div class="album-art"><img src="images/i-can-make-ya.webp" alt="I Can Make Ya"><div class="album-overlay"><a href="https://tr.ee/_BGZz88BNl" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
+                        <div class="album-art"><img src="https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/i-can-make-ya.webp" alt="I Can Make Ya"><div class="album-overlay"><a href="https://tr.ee/_BGZz88BNl" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
                         <div class="album-info"><div class="album-title">I Can Make Ya</div><div class="album-year">2013 • Legendary Tribute</div></div>
                     </div>
                     <div class="album-card">
-                        <div class="album-art"><img src="images/boogie-bruthaz.webp" alt="Boogie Bruthaz"><div class="album-overlay"><a href="https://tr.ee/_BGZz88BNl" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
+                        <div class="album-art"><img src="https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/boogie-bruthaz.webp" alt="Boogie Bruthaz"><div class="album-overlay"><a href="https://tr.ee/_BGZz88BNl" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
                         <div class="album-info"><div class="album-title">Boogie Bruthaz</div><div class="album-year">2014 • Dancer Favorite</div></div>
                     </div>
                     <div class="album-card">
-                        <div class="album-art"><img src="images/feel.webp" alt="Feel"><div class="album-overlay"><a href="https://tr.ee/dEHLrTTly_" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
+                        <div class="album-art"><img src="https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/feel.webp" alt="Feel"><div class="album-overlay"><a href="https://tr.ee/dEHLrTTly_" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
                         <div class="album-info"><div class="album-title">Feel (Single)</div><div class="album-year">2021 • Feat. SERGIIO</div></div>
                     </div>
                     <div class="album-card">
-                        <div class="album-art"><img src="images/7dayz.webp" alt="7DAYZ"><div class="album-overlay"><a href="https://tr.ee/Io3HnYEgN3" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
+                        <div class="album-art"><img src="https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/7dayz.webp" alt="7DAYZ"><div class="album-overlay"><a href="https://tr.ee/Io3HnYEgN3" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
                         <div class="album-info"><div class="album-title">7DAYZ</div><div class="album-year">2021 • Original Album</div></div>
                     </div>
                     <div class="album-card">
-                        <div class="album-art"><img src="images/vi$ionz.webp" alt="VI$IONZ"><div class="album-overlay"><a href="https://tr.ee/5xWQZn7OeV" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
+                        <div class="album-art"><img src="https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/vi$ionz.webp" alt="VI$IONZ"><div class="album-overlay"><a href="https://tr.ee/5xWQZn7OeV" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
                         <div class="album-info"><div class="album-title">VI$IONZ</div><div class="album-year">2016 • Original Album</div></div>
                     </div>
                     <div class="album-card">
-                        <div class="album-art"><img src="images/classics3.webp" alt="CLASSICS 3"><div class="album-overlay"><a href="https://tr.ee/zizhQob7cd" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
+                        <div class="album-art"><img src="https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/classics3.webp" alt="CLASSICS 3"><div class="album-overlay"><a href="https://tr.ee/zizhQob7cd" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
                         <div class="album-info"><div class="album-title">CLASSICS 3</div><div class="album-year">2014 • Talkbox Tributes</div></div>
                     </div>
                     <div class="album-card">
-                        <div class="album-art"><img src="images/classics-iv.webp" alt="CLASSICS IV"><div class="album-overlay"><a href="https://tr.ee/UEmaz4Mvvx" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
+                        <div class="album-art"><img src="https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/classics-iv.webp" alt="CLASSICS IV"><div class="album-overlay"><a href="https://tr.ee/UEmaz4Mvvx" target="_blank" class="btn btn-primary" style="padding: 10px 25px;">Stream</a></div></div>
                         <div class="album-info"><div class="album-title">CLASSICS IV</div><div class="album-year">2023 • Talkbox Tributes</div></div>
                     </div>
                 </div>
@@ -246,7 +270,7 @@
             <div class="container bio-grid">
                 <div class="bio-image-container">
                     <div class="bio-border-top"></div>
-                    <img src="images/fingazz-about.webp" alt="Fingazz" style="width: 100%; border-radius: 5px; filter: grayscale(100%) contrast(120%); position: relative; z-index: 2;">
+                    <img src="https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/fingazz-about.webp" alt="Fingazz" style="width: 100%; border-radius: 5px; filter: grayscale(100%) contrast(120%); position: relative; z-index: 2;">
                     <div class="bio-border-bottom"></div>
                 </div>
                 <div>
