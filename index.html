@@ -363,7 +363,7 @@
         </div>
     </div>
 
-    <script src="https://www.paypal.com/sdk/js?client-id=ARUhmNs263RFnw4W-3Tve9UohhlRTFn-JV-jf5nfAMe0Q42RtknFVt3Ui0KIXpWPqUrF-yYkrktXVQ7m&currency=USD"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=Afwqwk-2ytBnWm2TzVwwh1AuQgR7FPOS4mJ7x2MUngQLEJQTYWTX7Ib3wqeFlna_obWbBfTnfMzU8JeD&currency=USD"></script>
     
     <script>
         const supabaseUrl = 'https://fiqeqrtywxvrdkpyiebz.supabase.co';
@@ -632,7 +632,7 @@
         // --- PAYPAL ---
         if(document.getElementById('paypal-button-container')) {
              paypal.Buttons({
-                createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: '99.00' } }] }),
+                createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: '1.00' } }] }),
                 onApprove: async (data, actions) => {
                     await actions.order.capture();
                     const { data: { user } } = await supabaseClient.auth.getUser();
