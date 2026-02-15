@@ -581,8 +581,6 @@
                         // User logged in but hasn't paid
                         alert("Please purchase the course to access.");
                         showSection('landing');
-                        // Optional: Open checkout if they are logged in but unpaid
-                        // openCheckout(); 
                     }
                 } else {
                     alert("Please log in.");
@@ -599,8 +597,10 @@
             
             if (!error) {
                 closeLoginModal();
+                // FIX: Update UI immediately upon login
                 updateCourseUI(data.user);
-                // Check if they came from the "Enroll" button
+                updateNavButton({ user: data.user });
+                
                 if (window.pendingCheckout) {
                     openCheckout();
                     window.pendingCheckout = false;
@@ -610,12 +610,10 @@
             }
         }
 
-        // UPDATED: New Sign Up Function
         async function attemptSignUp() {
             const email = document.getElementById('student-email').value;
             const password = document.getElementById('student-pass').value;
             
-            // Basic validation
             if (!email || !password) {
                 document.getElementById('login-error').innerText = "Please enter both email and password.";
                 return;
@@ -627,12 +625,11 @@
             });
 
             if (!error) {
-                // Supabase automatically logs them in after signup (unless email confirmation is enabled)
-                // If you have email confirmation on, you might show "Check your email" here.
-                // Assuming default settings where sign-up logs you in:
                 alert("Account created! You are now logged in.");
                 closeLoginModal();
+                // FIX: Update UI immediately upon signup
                 updateCourseUI(data.user);
+                updateNavButton({ user: data.user });
                 
                 if (window.pendingCheckout) {
                     openCheckout();
@@ -650,23 +647,36 @@
                 const { data: profile } = await supabaseClient.from('profiles').select('has_access').eq('id', user.id).single();
                 
                 if (profile && profile.has_access) {
-                    // User has paid
+                    // User has paid -> Show ENTER COURSE
                     if(priceDisplay) priceDisplay.style.display = 'none';
                     if(ctaContainer) ctaContainer.innerHTML = `<button onclick="showSection('lms')" class="btn btn-primary" style="width:100%">ENTER COURSE</button>`;
                 } else {
-                    // User logged in, hasn't paid
-                    // Show Enroll button that opens checkout directly
+                    // User logged in, hasn't paid -> Show ENROLL (Check login)
                     if(ctaContainer) ctaContainer.innerHTML = `
                         <button onclick="openSlideshow()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
                         <button onclick="checkLoginAndPay()" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
                     `;
                 }
             } else {
-                // User not logged in - Default state
+                // User not logged in -> Show ENROLL (Check login)
                  if(ctaContainer) ctaContainer.innerHTML = `
                     <button onclick="openSlideshow()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
                     <button onclick="checkLoginAndPay()" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
                 `;
+            }
+        }
+
+        function updateNavButton(session) {
+            const btn = document.getElementById('nav-login-btn');
+            if (session && session.user) {
+                btn.innerText = "LOG OUT";
+                btn.onclick = async () => { 
+                    await supabaseClient.auth.signOut(); 
+                    window.location.reload(); 
+                };
+            } else {
+                btn.innerText = "Student Login";
+                btn.onclick = openLoginModal;
             }
         }
 
@@ -675,13 +685,12 @@
         function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
         function closeLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
         
-        // UPDATED: Check login before opening PayPal
         async function checkLoginAndPay() {
              const { data: { session } } = await supabaseClient.auth.getSession();
              if (session) {
                  openCheckout();
              } else {
-                 window.pendingCheckout = true; // Flag to open checkout after login
+                 window.pendingCheckout = true; 
                  openLoginModal();
                  document.getElementById('login-error').innerText = "Please create an account or log in to purchase.";
              }
@@ -695,22 +704,15 @@
 
         // --- INIT ---
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
-            if(session) updateCourseUI(session.user);
-            updateNavButton(session);
-        });
-        
-        function updateNavButton(session) {
-            const btn = document.getElementById('nav-login-btn');
-            if (session) {
-                btn.innerText = "Log Out";
-                btn.onclick = async () => { await supabaseClient.auth.signOut(); window.location.reload(); };
+            if(session) {
+                updateCourseUI(session.user);
+                updateNavButton(session);
             }
-        }
+        });
         
         // --- PAYPAL ---
         if(document.getElementById('paypal-button-container')) {
              paypal.Buttons({
-                // PRICE IS CURRENTLY SET TO 1.00 FOR TESTING
                 createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: '1.00' } }] }),
                 onApprove: async (data, actions) => {
                     await actions.order.capture();
@@ -719,9 +721,12 @@
                         await supabaseClient.from('profiles').update({ has_access: true }).eq('id', user.id);
                         alert("Payment successful! Welcome to the Academy."); 
                         closeCheckout(); 
+                        
+                        // FIX: Update the Course Button immediately to "Enter Course"
+                        updateCourseUI(user);
+                        
                         showSection('lms');
                     } else {
-                        // This fallback should rarely be hit now with the new flow
                         alert("Please log in before purchasing to save your progress.");
                         closeCheckout();
                         openLoginModal();
