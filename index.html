@@ -354,7 +354,17 @@
 
     <div id="checkout-modal" class="modal-overlay"><div class="checkout-modal"><div class="close-modal" onclick="closeCheckout()">×</div><h3>Secure Checkout</h3><div id="paypal-button-container" style="margin-top:20px;"></div></div></div>
     
-    <div id="login-modal" class="modal-overlay"><div class="login-modal-box"><div class="close-modal" onclick="closeLoginModal()">×</div><h3>Student Portal</h3><input type="email" id="student-email" class="form-input" placeholder="Email"><br><br><input type="password" id="student-pass" class="form-input" placeholder="Password"><br><br><button onclick="attemptLogin()" class="btn btn-secondary" style="width:100%">Enter</button><p id="login-error" style="color:red; margin-top:10px;"></p></div></div>
+    <div id="login-modal" class="modal-overlay">
+        <div class="login-modal-box">
+            <div class="close-modal" onclick="closeLoginModal()">×</div>
+            <h3>Student Portal</h3>
+            <input type="email" id="student-email" class="form-input" placeholder="Email"><br><br>
+            <input type="password" id="student-pass" class="form-input" placeholder="Password"><br><br>
+            <button onclick="attemptLogin()" class="btn btn-secondary" style="width:100%">Log In</button>
+            <button onclick="attemptSignUp()" class="btn btn-outline-purple" style="width:100%; margin-top:10px;">Create Account</button>
+            <p id="login-error" style="color:red; margin-top:10px;"></p>
+        </div>
+    </div>
     
     <div id="slideshow-modal" class="modal-overlay">
         <div class="slideshow-box">
@@ -568,8 +578,11 @@
                         document.getElementById('lms-page').classList.remove('hidden');
                         initVimeo();
                     } else {
+                        // User logged in but hasn't paid
                         alert("Please purchase the course to access.");
                         showSection('landing');
+                        // Optional: Open checkout if they are logged in but unpaid
+                        // openCheckout(); 
                     }
                 } else {
                     alert("Please log in.");
@@ -587,7 +600,44 @@
             if (!error) {
                 closeLoginModal();
                 updateCourseUI(data.user);
-                showSection('lms');
+                // Check if they came from the "Enroll" button
+                if (window.pendingCheckout) {
+                    openCheckout();
+                    window.pendingCheckout = false;
+                }
+            } else {
+                document.getElementById('login-error').innerText = error.message;
+            }
+        }
+
+        // UPDATED: New Sign Up Function
+        async function attemptSignUp() {
+            const email = document.getElementById('student-email').value;
+            const password = document.getElementById('student-pass').value;
+            
+            // Basic validation
+            if (!email || !password) {
+                document.getElementById('login-error').innerText = "Please enter both email and password.";
+                return;
+            }
+
+            const { data, error } = await supabaseClient.auth.signUp({
+                email: email,
+                password: password,
+            });
+
+            if (!error) {
+                // Supabase automatically logs them in after signup (unless email confirmation is enabled)
+                // If you have email confirmation on, you might show "Check your email" here.
+                // Assuming default settings where sign-up logs you in:
+                alert("Account created! You are now logged in.");
+                closeLoginModal();
+                updateCourseUI(data.user);
+                
+                if (window.pendingCheckout) {
+                    openCheckout();
+                    window.pendingCheckout = false;
+                }
             } else {
                 document.getElementById('login-error').innerText = error.message;
             }
@@ -598,10 +648,25 @@
             const ctaContainer = document.getElementById('course-cta-container');
             if (user) {
                 const { data: profile } = await supabaseClient.from('profiles').select('has_access').eq('id', user.id).single();
+                
                 if (profile && profile.has_access) {
+                    // User has paid
                     if(priceDisplay) priceDisplay.style.display = 'none';
                     if(ctaContainer) ctaContainer.innerHTML = `<button onclick="showSection('lms')" class="btn btn-primary" style="width:100%">ENTER COURSE</button>`;
+                } else {
+                    // User logged in, hasn't paid
+                    // Show Enroll button that opens checkout directly
+                    if(ctaContainer) ctaContainer.innerHTML = `
+                        <button onclick="openSlideshow()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
+                        <button onclick="checkLoginAndPay()" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
+                    `;
                 }
+            } else {
+                // User not logged in - Default state
+                 if(ctaContainer) ctaContainer.innerHTML = `
+                    <button onclick="openSlideshow()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
+                    <button onclick="checkLoginAndPay()" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
+                `;
             }
         }
 
@@ -609,6 +674,19 @@
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
         function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
         function closeLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
+        
+        // UPDATED: Check login before opening PayPal
+        async function checkLoginAndPay() {
+             const { data: { session } } = await supabaseClient.auth.getSession();
+             if (session) {
+                 openCheckout();
+             } else {
+                 window.pendingCheckout = true; // Flag to open checkout after login
+                 openLoginModal();
+                 document.getElementById('login-error').innerText = "Please create an account or log in to purchase.";
+             }
+        }
+
         function openCheckout() { document.getElementById('checkout-modal').style.display = 'flex'; }
         function closeCheckout() { document.getElementById('checkout-modal').style.display = 'none'; }
         
@@ -632,6 +710,7 @@
         // --- PAYPAL ---
         if(document.getElementById('paypal-button-container')) {
              paypal.Buttons({
+                // PRICE IS CURRENTLY SET TO 1.00 FOR TESTING
                 createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: '1.00' } }] }),
                 onApprove: async (data, actions) => {
                     await actions.order.capture();
@@ -642,6 +721,7 @@
                         closeCheckout(); 
                         showSection('lms');
                     } else {
+                        // This fallback should rarely be hit now with the new flow
                         alert("Please log in before purchasing to save your progress.");
                         closeCheckout();
                         openLoginModal();
