@@ -97,21 +97,30 @@
         .contact-icon { font-size: 1.5rem; color: var(--secondary); }
         
         /* LMS & Video */
+        /* UPDATED: Sidebar Flex column + Scrollable list + Fixed footer */
         .lms-container { display: grid; grid-template-columns: 350px 1fr; height: 100vh; padding-top: 85px; }
-        .lms-sidebar { background: #080808; border-right: 1px solid #333; overflow-y: auto; display: flex; flex-direction: column; }
-        .lms-progress-card { padding: 20px; background: #111; border-bottom: 1px solid #333; }
+        .lms-sidebar { background: #080808; border-right: 1px solid #333; display: flex; flex-direction: column; overflow: hidden; height: 100%; }
+        
+        .lms-progress-card { padding: 20px; background: #111; border-bottom: 1px solid #333; flex-shrink: 0; }
         .progress-bar { width: 100%; height: 6px; background: #333; border-radius: 3px; margin-top: 10px; overflow: hidden;}
         .progress-fill { width: 15%; height: 100%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+        
+        /* New scroll behavior for list only */
+        .module-list { flex-grow: 1; overflow-y: auto; }
+        
         .lesson-item { padding: 15px 20px; cursor: pointer; border-left: 3px solid transparent; transition: 0.2s; display: flex; align-items: center; color: #ccc; border-bottom: 1px solid #222; }
         .lesson-item:hover { background: #151515; color: white; }
         .lesson-item.active { background: rgba(0, 243, 255, 0.05); border-left: 3px solid var(--primary); color: var(--primary); }
+        
         .lms-content { padding: 40px; background: #050505; overflow-y: auto; }
         .video-container { width: 100%; background: #000; border: 1px solid #333; margin-bottom: 30px; position: relative; aspect-ratio: 16/9; }
         .resources-box { background: #111; border: 1px solid #333; padding: 20px; border-radius: 8px; margin-top: 30px; }
         .resource-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; color: #ccc; }
+        
+        /* New Help Section in Sidebar */
+        .lms-help-footer { padding: 20px; border-top: 1px solid #222; background: #080808; flex-shrink: 0; }
 
         /* Modals */
-        /* CHECKOUT MODAL with Promo Code & Free Button */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center; }
         .checkout-modal { background: #0a0a0a; border: 2px solid var(--primary); width: 100%; max-width: 500px; padding: 40px; border-radius: 10px; box-shadow: 0 0 50px rgba(0, 243, 255, 0.2); text-align: center; position: relative; }
         .login-modal-box { background: #0a0a0a; border: 2px solid var(--secondary); width: 100%; max-width: 400px; padding: 40px; border-radius: 10px; box-shadow: 0 0 50px rgba(255, 0, 85, 0.2); text-align: center; position: relative; }
@@ -336,7 +345,14 @@
                     <div class="progress-bar"><div class="progress-fill"></div></div>
                 </div>
                 <div class="module-list" id="lesson-list-container"></div>
+                
+                <div class="lms-help-footer">
+                    <a href="mailto:thegetdown@fingadelic.com?subject=Help Request - Fingadelic Academy" class="btn btn-secondary" style="width:100%; display:block; text-align:center;">
+                        <i class="fas fa-life-ring" style="margin-right:8px;"></i> GET HELP
+                    </a>
+                </div>
             </div>
+            
             <div class="lms-content">
                 <div class="video-container">
                     <div id="video-display"></div>
