@@ -111,6 +111,7 @@
         .resource-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; color: #ccc; }
 
         /* Modals */
+        /* CHECKOUT MODAL with Promo Code & Free Button */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center; }
         .checkout-modal { background: #0a0a0a; border: 2px solid var(--primary); width: 100%; max-width: 500px; padding: 40px; border-radius: 10px; box-shadow: 0 0 50px rgba(0, 243, 255, 0.2); text-align: center; position: relative; }
         .login-modal-box { background: #0a0a0a; border: 2px solid var(--secondary); width: 100%; max-width: 400px; padding: 40px; border-radius: 10px; box-shadow: 0 0 50px rgba(255, 0, 85, 0.2); text-align: center; position: relative; }
@@ -352,7 +353,23 @@
         </div>
     </div>
 
-    <div id="checkout-modal" class="modal-overlay"><div class="checkout-modal"><div class="close-modal" onclick="closeCheckout()">×</div><h3>Secure Checkout</h3><div id="paypal-button-container" style="margin-top:20px;"></div></div></div>
+    <div id="checkout-modal" class="modal-overlay">
+        <div class="checkout-modal">
+            <div class="close-modal" onclick="closeCheckout()">×</div>
+            <h3>Secure Checkout</h3>
+            
+            <div id="checkout-price-display" style="font-size: 1.8rem; font-weight:900; color:white; margin:15px 0;">Total: $99.00</div>
+            
+            <div style="display:flex; gap:10px; justify-content:center; margin-bottom:20px;">
+                <input type="text" id="promo-input" placeholder="Promo Code" style="padding:10px; border-radius:4px; border:1px solid #333; background:#111; color:white; text-transform:uppercase;">
+                <button onclick="applyCoupon()" class="btn btn-secondary" style="padding:10px 20px; font-size:0.8rem;">APPLY</button>
+            </div>
+            <div id="coupon-message" style="margin-bottom:20px; font-size:0.9rem; min-height:1.2em;"></div>
+            
+            <div id="paypal-button-container"></div>
+            <button id="free-unlock-btn" onclick="unlockFreeCourse()" class="btn btn-primary hidden" style="width:100%; margin-top:20px;">UNLOCK COURSE FOR FREE</button>
+        </div>
+    </div>
     
     <div id="login-modal" class="modal-overlay">
         <div class="login-modal-box">
@@ -380,6 +397,80 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpcWVxcnR5d3h2cmRrcHlpZWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA1ODY3NDcsImV4cCI6MjA4NjE2Mjc0N30.FiUKSifWssU-oloDyKa54IJCsjkiaq79vNZ4dKazCM8';
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+        // --- PRICING & COUPON LOGIC ---
+        // FINAL LAUNCH PRICE SET TO $99.00
+        const basePrice = '99.00'; 
+        let currentPrice = basePrice;
+
+        function applyCoupon() {
+            const input = document.getElementById('promo-input');
+            const message = document.getElementById('coupon-message');
+            const priceDisplay = document.getElementById('checkout-price-display');
+            const paypalBtn = document.getElementById('paypal-button-container');
+            const freeBtn = document.getElementById('free-unlock-btn');
+            
+            const code = input.value.trim().toUpperCase();
+
+            // Reset States
+            paypalBtn.style.display = 'block';
+            freeBtn.classList.add('hidden');
+
+            if (code === 'INTRO20') {
+                // 20% OFF
+                const numPrice = parseFloat(basePrice);
+                currentPrice = (numPrice * 0.80).toFixed(2);
+                
+                message.style.color = '#00f3ff';
+                message.innerText = "20% DISCOUNT APPLIED!";
+                priceDisplay.innerHTML = `Total: <span style="text-decoration:line-through; color:#666; font-size:1rem;">$${basePrice}</span> $${currentPrice}`;
+            
+            } else if (code === 'THEHOOKUP') {
+                // 100% OFF (FREE)
+                currentPrice = 0;
+                
+                message.style.color = '#bd00ff';
+                message.innerText = "VIP ACCESS GRANTED!";
+                priceDisplay.innerHTML = `Total: <span style="text-decoration:line-through; color:#666; font-size:1rem;">$${basePrice}</span> $0.00`;
+                
+                // Hide PayPal, Show Free Button
+                paypalBtn.style.display = 'none';
+                freeBtn.classList.remove('hidden');
+
+            } else {
+                // Invalid Code
+                message.style.color = 'red';
+                message.innerText = "INVALID PROMO CODE";
+                
+                // Reset Price
+                currentPrice = basePrice;
+                priceDisplay.innerText = "Total: $" + basePrice;
+            }
+        }
+
+        async function unlockFreeCourse() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (user) {
+                // DIRECTLY UNLOCK IN DATABASE
+                await supabaseClient.from('profiles').update({ has_access: true }).eq('id', user.id);
+                alert("Course Unlocked! Welcome to the Academy."); 
+                closeCheckout(); 
+                updateCourseUI(user);
+                showSection('lms');
+            } else {
+                alert("Error: You must be logged in.");
+            }
+        }
+
+        function resetCheckout() {
+            currentPrice = basePrice;
+            document.getElementById('promo-input').value = "";
+            document.getElementById('coupon-message').innerText = "";
+            document.getElementById('checkout-price-display').innerText = "Total: $" + basePrice;
+            document.getElementById('paypal-button-container').style.display = 'block';
+            document.getElementById('free-unlock-btn').classList.add('hidden');
+        }
+
+        // --- LMS DATA ---
         const lessonData = [
             { 
                 id: "1162224336",
@@ -597,7 +688,6 @@
             
             if (!error) {
                 closeLoginModal();
-                // FIX: Update UI immediately upon login
                 updateCourseUI(data.user);
                 updateNavButton({ user: data.user });
                 
@@ -627,7 +717,6 @@
             if (!error) {
                 alert("Account created! You are now logged in.");
                 closeLoginModal();
-                // FIX: Update UI immediately upon signup
                 updateCourseUI(data.user);
                 updateNavButton({ user: data.user });
                 
@@ -696,7 +785,10 @@
              }
         }
 
-        function openCheckout() { document.getElementById('checkout-modal').style.display = 'flex'; }
+        function openCheckout() { 
+            resetCheckout(); // Reset price to base before opening
+            document.getElementById('checkout-modal').style.display = 'flex'; 
+        }
         function closeCheckout() { document.getElementById('checkout-modal').style.display = 'none'; }
         
         function openSlideshow() { document.getElementById('slideshow-modal').style.display = 'flex'; }
@@ -713,7 +805,8 @@
         // --- PAYPAL ---
         if(document.getElementById('paypal-button-container')) {
              paypal.Buttons({
-                createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: '1.00' } }] }),
+                // DYNAMIC PRICE: Reads 'currentPrice' variable which changes when coupon is applied
+                createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: currentPrice } }] }),
                 onApprove: async (data, actions) => {
                     await actions.order.capture();
                     const { data: { user } } = await supabaseClient.auth.getUser();
@@ -721,10 +814,7 @@
                         await supabaseClient.from('profiles').update({ has_access: true }).eq('id', user.id);
                         alert("Payment successful! Welcome to the Academy."); 
                         closeCheckout(); 
-                        
-                        // FIX: Update the Course Button immediately to "Enter Course"
                         updateCourseUI(user);
-                        
                         showSection('lms');
                     } else {
                         alert("Please log in before purchasing to save your progress.");
