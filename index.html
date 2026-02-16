@@ -48,6 +48,11 @@
         .form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); background: #111; }
         .form-textarea { resize: vertical; min-height: 150px; }
         
+        /* New Password Visibility Styles */
+        .password-container { position: relative; }
+        .password-toggle-icon { position: absolute; top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer; color: #666; }
+        .password-toggle-icon:hover { color: var(--primary); }
+
         /* Header */
         header { padding: 20px 0; position: fixed; width: 100%; top: 0; z-index: 1000; background: rgba(5, 5, 5, 0.9); border-bottom: 2px solid; border-image: linear-gradient(to right, var(--neon-purple), var(--primary), var(--secondary)) 1; backdrop-filter: blur(15px); }
         nav { display: flex; justify-content: space-between; align-items: center; }
@@ -373,11 +378,29 @@
     <div id="login-modal" class="modal-overlay">
         <div class="login-modal-box">
             <div class="close-modal" onclick="closeLoginModal()">×</div>
-            <h3>Student Portal</h3>
-            <input type="email" id="student-email" class="form-input" placeholder="Email"><br><br>
-            <input type="password" id="student-pass" class="form-input" placeholder="Password"><br><br>
-            <button onclick="attemptLogin()" class="btn btn-secondary" style="width:100%">Log In</button>
-            <button onclick="attemptSignUp()" class="btn btn-outline-purple" style="width:100%; margin-top:10px;">Create Account</button>
+            <h3 id="auth-title">Student Login</h3>
+            
+            <input type="text" id="student-name" class="form-input hidden" placeholder="Full Name" style="margin-bottom:15px;">
+            
+            <input type="email" id="student-email" class="form-input" placeholder="Email" style="margin-bottom:15px;">
+            
+            <div class="password-container" style="margin-bottom:15px;">
+                <input type="password" id="student-pass" class="form-input" placeholder="Password">
+                <i class="fas fa-eye password-toggle-icon" onclick="togglePassword('student-pass')"></i>
+            </div>
+
+            <div id="confirm-pass-container" class="password-container hidden" style="margin-bottom:15px;">
+                <input type="password" id="student-pass-confirm" class="form-input" placeholder="Confirm Password">
+                <i class="fas fa-eye password-toggle-icon" onclick="togglePassword('student-pass-confirm')"></i>
+            </div>
+
+            <button id="auth-action-btn" onclick="handleAuthAction()" class="btn btn-secondary" style="width:100%">Log In</button>
+            
+            <div style="margin-top:15px; font-size:0.9rem; color:#888;">
+                <span id="auth-toggle-text">Need an account?</span> 
+                <a href="#" onclick="toggleAuthMode()" style="color:var(--primary); font-weight:bold;">Click Here</a>
+            </div>
+            
             <p id="login-error" style="color:red; margin-top:10px;"></p>
         </div>
     </div>
@@ -408,19 +431,126 @@
         const basePrice = '99.00'; 
         let currentPrice = basePrice;
 
+        // --- AUTH LOGIC (UPDATED) ---
+        let isSignupMode = false;
+
+        function toggleAuthMode() {
+            isSignupMode = !isSignupMode;
+            const title = document.getElementById('auth-title');
+            const nameInput = document.getElementById('student-name');
+            const confirmContainer = document.getElementById('confirm-pass-container');
+            const actionBtn = document.getElementById('auth-action-btn');
+            const toggleText = document.getElementById('auth-toggle-text');
+            const errorMsg = document.getElementById('login-error');
+
+            // Clear errors
+            errorMsg.innerText = "";
+
+            if (isSignupMode) {
+                // Show Signup Fields
+                title.innerText = "Create Account";
+                nameInput.classList.remove('hidden');
+                confirmContainer.classList.remove('hidden');
+                actionBtn.innerText = "Register";
+                actionBtn.classList.remove('btn-secondary');
+                actionBtn.classList.add('btn-outline-purple');
+                toggleText.innerHTML = "Have an account? ";
+            } else {
+                // Show Login Fields
+                title.innerText = "Student Login";
+                nameInput.classList.add('hidden');
+                confirmContainer.classList.add('hidden');
+                actionBtn.innerText = "Log In";
+                actionBtn.classList.remove('btn-outline-purple');
+                actionBtn.classList.add('btn-secondary');
+                toggleText.innerHTML = "Need an account? ";
+            }
+        }
+
+        function togglePassword(fieldId) {
+            const input = document.getElementById(fieldId);
+            if (input.type === "password") {
+                input.type = "text";
+            } else {
+                input.type = "password";
+            }
+        }
+
+        async function handleAuthAction() {
+            if (isSignupMode) {
+                await attemptSignUp();
+            } else {
+                await attemptLogin();
+            }
+        }
+
+        async function attemptLogin() {
+            const email = document.getElementById('student-email').value;
+            const password = document.getElementById('student-pass').value;
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            
+            if (!error) {
+                closeLoginModal();
+                updateCourseUI(data.user);
+                updateNavButton({ user: data.user });
+                if (window.pendingCheckout) {
+                    openCheckout();
+                    window.pendingCheckout = false;
+                }
+            } else {
+                document.getElementById('login-error').innerText = error.message;
+            }
+        }
+
+        async function attemptSignUp() {
+            const name = document.getElementById('student-name').value;
+            const email = document.getElementById('student-email').value;
+            const password = document.getElementById('student-pass').value;
+            const confirm = document.getElementById('student-pass-confirm').value;
+            
+            // Validation
+            if (!email || !password || !name) {
+                document.getElementById('login-error').innerText = "Please fill in all fields.";
+                return;
+            }
+            if (password !== confirm) {
+                document.getElementById('login-error').innerText = "Passwords do not match.";
+                return;
+            }
+
+            const { data, error } = await supabaseClient.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        full_name: name // Saves name to user metadata
+                    }
+                }
+            });
+
+            if (!error) {
+                alert("Account created! You are now logged in.");
+                closeLoginModal();
+                updateCourseUI(data.user);
+                updateNavButton({ user: data.user });
+                if (window.pendingCheckout) {
+                    openCheckout();
+                    window.pendingCheckout = false;
+                }
+            } else {
+                document.getElementById('login-error').innerText = error.message;
+            }
+        }
+
         // --- TRAILER LOGIC ---
         let trailerPlayer = null;
 
         function openTrailer() {
             document.getElementById('trailer-modal').style.display = 'flex';
-            // Reset overlay
             document.getElementById('trailer-overlay').style.display = 'flex';
-            
-            // Init player if first time
             if (!trailerPlayer) {
                 trailerPlayer = new Vimeo.Player(document.querySelector('#trailer-video-frame'));
             }
-            // Do NOT play yet, wait for overlay click
         }
         
         function playTrailerWithSound() {
@@ -449,7 +579,6 @@
             
             const code = input.value.trim().toUpperCase();
 
-            // Reset States
             paypalBtn.style.display = 'block';
             freeBtn.classList.add('hidden');
 
@@ -634,7 +763,6 @@
                 vimeoPlayer = new Vimeo.Player('video-display', {
                     url: videoUrl,
                     responsive: true,
-                    // CHANGED: Click to Play for lessons
                     autoplay: false,
                     muted: false,
                     controls: true
@@ -709,70 +837,21 @@
             }
         }
 
-        async function attemptLogin() {
-            const email = document.getElementById('student-email').value;
-            const password = document.getElementById('student-pass').value;
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            
-            if (!error) {
-                closeLoginModal();
-                updateCourseUI(data.user);
-                updateNavButton({ user: data.user });
-                if (window.pendingCheckout) {
-                    openCheckout();
-                    window.pendingCheckout = false;
-                }
-            } else {
-                document.getElementById('login-error').innerText = error.message;
-            }
-        }
-
-        async function attemptSignUp() {
-            const email = document.getElementById('student-email').value;
-            const password = document.getElementById('student-pass').value;
-            
-            if (!email || !password) {
-                document.getElementById('login-error').innerText = "Please enter both email and password.";
-                return;
-            }
-
-            const { data, error } = await supabaseClient.auth.signUp({
-                email: email,
-                password: password,
-            });
-
-            if (!error) {
-                alert("Account created! You are now logged in.");
-                closeLoginModal();
-                updateCourseUI(data.user);
-                updateNavButton({ user: data.user });
-                if (window.pendingCheckout) {
-                    openCheckout();
-                    window.pendingCheckout = false;
-                }
-            } else {
-                document.getElementById('login-error').innerText = error.message;
-            }
-        }
-
         async function updateCourseUI(user) {
             const priceDisplay = document.getElementById('course-price-display');
             const ctaContainer = document.getElementById('course-cta-container');
             if (user) {
                 const { data: profile } = await supabaseClient.from('profiles').select('has_access').eq('id', user.id).single();
                 if (profile && profile.has_access) {
-                    // Paid
                     if(priceDisplay) priceDisplay.style.display = 'none';
                     if(ctaContainer) ctaContainer.innerHTML = `<button onclick="showSection('lms')" class="btn btn-primary" style="width:100%">ENTER COURSE</button>`;
                 } else {
-                    // Logged in, not paid
                     if(ctaContainer) ctaContainer.innerHTML = `
                         <button onclick="openTrailer()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
                         <button onclick="checkLoginAndPay()" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
                     `;
                 }
             } else {
-                // Guest
                  if(ctaContainer) ctaContainer.innerHTML = `
                     <button onclick="openTrailer()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
                     <button onclick="checkLoginAndPay()" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
@@ -796,7 +875,12 @@
 
         // --- MODAL UTILS ---
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
-        function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
+        function openLoginModal() { 
+            // Reset to Login mode on open
+            isSignupMode = true; // Set to true then toggle to false to reset UI correctly
+            toggleAuthMode();
+            document.getElementById('login-modal').style.display = 'flex'; 
+        }
         function closeLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
         
         async function checkLoginAndPay() {
