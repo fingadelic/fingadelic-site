@@ -97,40 +97,29 @@
         .contact-icon { font-size: 1.5rem; color: var(--secondary); }
         
         /* LMS & Video */
-        /* UPDATED: Sidebar Flex column + Scrollable list + Fixed footer */
         .lms-container { display: grid; grid-template-columns: 350px 1fr; height: 100vh; padding-top: 85px; }
         .lms-sidebar { background: #080808; border-right: 1px solid #333; display: flex; flex-direction: column; overflow: hidden; height: 100%; }
-        
         .lms-progress-card { padding: 20px; background: #111; border-bottom: 1px solid #333; flex-shrink: 0; }
         .progress-bar { width: 100%; height: 6px; background: #333; border-radius: 3px; margin-top: 10px; overflow: hidden;}
         .progress-fill { width: 15%; height: 100%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
-        
-        /* New scroll behavior for list only */
         .module-list { flex-grow: 1; overflow-y: auto; }
-        
         .lesson-item { padding: 15px 20px; cursor: pointer; border-left: 3px solid transparent; transition: 0.2s; display: flex; align-items: center; color: #ccc; border-bottom: 1px solid #222; }
         .lesson-item:hover { background: #151515; color: white; }
         .lesson-item.active { background: rgba(0, 243, 255, 0.05); border-left: 3px solid var(--primary); color: var(--primary); }
-        
         .lms-content { padding: 40px; background: #050505; overflow-y: auto; }
         .video-container { width: 100%; background: #000; border: 1px solid #333; margin-bottom: 30px; position: relative; aspect-ratio: 16/9; }
         .resources-box { background: #111; border: 1px solid #333; padding: 20px; border-radius: 8px; margin-top: 30px; }
         .resource-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; color: #ccc; }
-        
-        /* New Help Section in Sidebar */
         .lms-help-footer { padding: 20px; border-top: 1px solid #222; background: #080808; flex-shrink: 0; }
 
         /* Modals */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center; }
         .checkout-modal { background: #0a0a0a; border: 2px solid var(--primary); width: 100%; max-width: 500px; padding: 40px; border-radius: 10px; box-shadow: 0 0 50px rgba(0, 243, 255, 0.2); text-align: center; position: relative; }
         .login-modal-box { background: #0a0a0a; border: 2px solid var(--secondary); width: 100%; max-width: 400px; padding: 40px; border-radius: 10px; box-shadow: 0 0 50px rgba(255, 0, 85, 0.2); text-align: center; position: relative; }
+        .trailer-modal-box { background: #0a0a0a; border: 2px solid var(--neon-purple); width: 95%; max-width: 800px; padding: 20px; border-radius: 10px; box-shadow: 0 0 50px rgba(189, 0, 255, 0.2); text-align: center; position: relative; }
+        
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #666; transition:0.3s;}
         .close-modal:hover { color: white; }
-        
-        /* Slideshow */
-        .slideshow-box { width: 95%; max-width: 800px; position: relative; }
-        .slide-img { width: 100%; border-radius: 8px; box-shadow: 0 0 30px rgba(189, 0, 255, 0.2); border: 1px solid #333; display: block; }
-        .close-slideshow { position: absolute; top: -40px; right: 0; font-size: 2rem; color: #fff; cursor: pointer; }
 
         @media (max-width: 900px) {
             .mobile-only { display: block; }
@@ -140,32 +129,11 @@
             .mobile-menu-btn { display: block; }
             .hero h1 { font-size: 2.8rem; }
             .course-layout, .album-grid, .contact-grid { grid-template-columns: 1fr; }
-            
-            /* Compact padding for mobile */
             .section-padding { padding: 50px 0; }
             .contact-grid { gap: 30px; }
-            
-            /* LMS Mobile Styles */
-            .lms-container { 
-                display: flex; 
-                flex-direction: column; 
-                height: auto; 
-                padding-top: 60px;
-            }
-            .lms-content { 
-                order: 1; 
-                padding: 20px;
-                height: auto;
-                overflow: visible;
-            }
-            .lms-sidebar { 
-                display: block !important; 
-                order: 2;
-                border-right: none;
-                border-top: 1px solid #333;
-                height: auto;
-                max-height: 500px;
-            }
+            .lms-container { display: flex; flex-direction: column; height: auto; padding-top: 60px; }
+            .lms-content { order: 1; padding: 20px; height: auto; overflow: visible; }
+            .lms-sidebar { display: block !important; order: 2; border-right: none; border-top: 1px solid #333; height: auto; max-height: 500px; }
         }
     </style>
 </head>
@@ -228,7 +196,7 @@
                             <li><i class="fas fa-upload" style="color:var(--secondary); margin-right:10px;"></i> Real feedback and support</li>
                         </ul>
                         <div id="course-cta-container" style="margin-top: 40px; display:grid; gap:15px;">
-                            <button onclick="openSlideshow()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
+                            <button onclick="openTrailer()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
                             <button onclick="checkLoginAndPay()" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
                         </div>
                     </div>
@@ -399,10 +367,13 @@
         </div>
     </div>
     
-    <div id="slideshow-modal" class="modal-overlay">
-        <div class="slideshow-box">
-            <div class="close-slideshow" onclick="closeSlideshow()">×</div>
-            <img id="slide-img" class="slide-img" src="https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/course-preview-1.jpg">
+    <div id="trailer-modal" class="modal-overlay">
+        <div class="trailer-modal-box">
+            <div class="close-modal" onclick="closeTrailer()">×</div>
+            <h3 style="margin-bottom: 15px; text-transform:uppercase; color:white;">Course Preview</h3>
+            <div style="padding:56.25% 0 0 0;position:relative;">
+                <iframe id="trailer-video-frame" src="https://player.vimeo.com/video/76979871?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Course Trailer"></iframe>
+            </div>
         </div>
     </div>
 
@@ -413,11 +384,29 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpcWVxcnR5d3h2cmRrcHlpZWJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA1ODY3NDcsImV4cCI6MjA4NjE2Mjc0N30.FiUKSifWssU-oloDyKa54IJCsjkiaq79vNZ4dKazCM8';
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        // --- PRICING & COUPON LOGIC ---
-        // FINAL LAUNCH PRICE SET TO $99.00
         const basePrice = '99.00'; 
         let currentPrice = basePrice;
 
+        // --- TRAILER LOGIC ---
+        let trailerPlayer = null;
+
+        function openTrailer() {
+            document.getElementById('trailer-modal').style.display = 'flex';
+            // Init player if first time
+            if (!trailerPlayer) {
+                trailerPlayer = new Vimeo.Player(document.querySelector('#trailer-video-frame'));
+            }
+            trailerPlayer.play();
+        }
+
+        function closeTrailer() {
+            document.getElementById('trailer-modal').style.display = 'none';
+            if (trailerPlayer) {
+                trailerPlayer.pause();
+            }
+        }
+
+        // --- CHECKOUT LOGIC ---
         function applyCoupon() {
             const input = document.getElementById('promo-input');
             const message = document.getElementById('coupon-message');
@@ -432,32 +421,23 @@
             freeBtn.classList.add('hidden');
 
             if (code === 'INTRO20') {
-                // 20% OFF
                 const numPrice = parseFloat(basePrice);
                 currentPrice = (numPrice * 0.80).toFixed(2);
-                
                 message.style.color = '#00f3ff';
                 message.innerText = "20% DISCOUNT APPLIED!";
                 priceDisplay.innerHTML = `Total: <span style="text-decoration:line-through; color:#666; font-size:1rem;">$${basePrice}</span> $${currentPrice}`;
             
             } else if (code === 'THEHOOKUP') {
-                // 100% OFF (FREE)
                 currentPrice = 0;
-                
                 message.style.color = '#bd00ff';
                 message.innerText = "VIP ACCESS GRANTED!";
                 priceDisplay.innerHTML = `Total: <span style="text-decoration:line-through; color:#666; font-size:1rem;">$${basePrice}</span> $0.00`;
-                
-                // Hide PayPal, Show Free Button
                 paypalBtn.style.display = 'none';
                 freeBtn.classList.remove('hidden');
 
             } else {
-                // Invalid Code
                 message.style.color = 'red';
                 message.innerText = "INVALID PROMO CODE";
-                
-                // Reset Price
                 currentPrice = basePrice;
                 priceDisplay.innerText = "Total: $" + basePrice;
             }
@@ -466,7 +446,6 @@
         async function unlockFreeCourse() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             if (user) {
-                // DIRECTLY UNLOCK IN DATABASE
                 await supabaseClient.from('profiles').update({ has_access: true }).eq('id', user.id);
                 alert("Course Unlocked! Welcome to the Academy."); 
                 closeCheckout(); 
@@ -586,7 +565,7 @@
             }
         ];
 
-        // --- LMS LOGIC ---
+        // --- LMS PLAYER ---
         const lessonList = document.getElementById('lesson-list-container');
         if (lessonList) {
             lessonData.forEach((lesson, index) => {
@@ -670,7 +649,7 @@
             });
         }
 
-        // --- AUTH & NAV LOGIC ---
+        // --- AUTH & NAV ---
         async function showSection(sectionId) {
             document.getElementById('landing-page').classList.add('hidden');
             document.getElementById('lms-page').classList.add('hidden');
@@ -685,7 +664,6 @@
                         document.getElementById('lms-page').classList.remove('hidden');
                         initVimeo();
                     } else {
-                        // User logged in but hasn't paid
                         alert("Please purchase the course to access.");
                         showSection('landing');
                     }
@@ -706,7 +684,6 @@
                 closeLoginModal();
                 updateCourseUI(data.user);
                 updateNavButton({ user: data.user });
-                
                 if (window.pendingCheckout) {
                     openCheckout();
                     window.pendingCheckout = false;
@@ -735,7 +712,6 @@
                 closeLoginModal();
                 updateCourseUI(data.user);
                 updateNavButton({ user: data.user });
-                
                 if (window.pendingCheckout) {
                     openCheckout();
                     window.pendingCheckout = false;
@@ -750,22 +726,21 @@
             const ctaContainer = document.getElementById('course-cta-container');
             if (user) {
                 const { data: profile } = await supabaseClient.from('profiles').select('has_access').eq('id', user.id).single();
-                
                 if (profile && profile.has_access) {
-                    // User has paid -> Show ENTER COURSE
+                    // Paid
                     if(priceDisplay) priceDisplay.style.display = 'none';
                     if(ctaContainer) ctaContainer.innerHTML = `<button onclick="showSection('lms')" class="btn btn-primary" style="width:100%">ENTER COURSE</button>`;
                 } else {
-                    // User logged in, hasn't paid -> Show ENROLL (Check login)
+                    // Logged in, not paid
                     if(ctaContainer) ctaContainer.innerHTML = `
-                        <button onclick="openSlideshow()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
+                        <button onclick="openTrailer()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
                         <button onclick="checkLoginAndPay()" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
                     `;
                 }
             } else {
-                // User not logged in -> Show ENROLL (Check login)
+                // Guest
                  if(ctaContainer) ctaContainer.innerHTML = `
-                    <button onclick="openSlideshow()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
+                    <button onclick="openTrailer()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
                     <button onclick="checkLoginAndPay()" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
                 `;
             }
@@ -785,7 +760,7 @@
             }
         }
 
-        // --- MODAL FUNCTIONS ---
+        // --- MODAL UTILS ---
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
         function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
         function closeLoginModal() { document.getElementById('login-modal').style.display = 'none'; }
@@ -802,14 +777,11 @@
         }
 
         function openCheckout() { 
-            resetCheckout(); // Reset price to base before opening
+            resetCheckout(); 
             document.getElementById('checkout-modal').style.display = 'flex'; 
         }
         function closeCheckout() { document.getElementById('checkout-modal').style.display = 'none'; }
         
-        function openSlideshow() { document.getElementById('slideshow-modal').style.display = 'flex'; }
-        function closeSlideshow() { document.getElementById('slideshow-modal').style.display = 'none'; }
-
         // --- INIT ---
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
             if(session) {
@@ -821,7 +793,6 @@
         // --- PAYPAL ---
         if(document.getElementById('paypal-button-container')) {
              paypal.Buttons({
-                // DYNAMIC PRICE: Reads 'currentPrice' variable which changes when coupon is applied
                 createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: currentPrice } }] }),
                 onApprove: async (data, actions) => {
                     await actions.order.capture();
