@@ -48,7 +48,7 @@
         .form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); background: #111; }
         .form-textarea { resize: vertical; min-height: 150px; }
         
-        /* New Password Visibility Styles */
+        /* Password Visibility Styles */
         .password-container { position: relative; }
         .password-toggle-icon { position: absolute; top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer; color: #666; }
         .password-toggle-icon:hover { color: var(--primary); }
@@ -126,7 +126,7 @@
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #666; transition:0.3s;}
         .close-modal:hover { color: white; }
 
-        /* NEW: Trailer Overlay Styles */
+        /* Trailer Overlay Styles */
         #trailer-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8) url('https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/course-preview-1.jpg') center/cover;
@@ -528,17 +528,28 @@
                 }
             });
 
-            if (!error) {
-                alert("Account created! You are now logged in.");
-                closeLoginModal();
-                updateCourseUI(data.user);
-                updateNavButton({ user: data.user });
-                if (window.pendingCheckout) {
-                    openCheckout();
-                    window.pendingCheckout = false;
-                }
-            } else {
+            if (error) {
                 document.getElementById('login-error').innerText = error.message;
+                return;
+            }
+
+            // Check if email confirmation is required (Session will be null)
+            if (data.user && !data.session) {
+                alert("Registration successful! \n\nPlease check your email to confirm your account before logging in.");
+                closeLoginModal();
+                // Do NOT open checkout yet. They need to verify first.
+                return;
+            }
+
+            // If we get here, they are logged in (Email confirmation is likely disabled in Supabase)
+            alert("Account created! You are now logged in.");
+            closeLoginModal();
+            updateCourseUI(data.user);
+            updateNavButton({ user: data.user });
+
+            if (window.pendingCheckout) {
+                openCheckout();
+                window.pendingCheckout = false;
             }
         }
 
@@ -763,6 +774,7 @@
                 vimeoPlayer = new Vimeo.Player('video-display', {
                     url: videoUrl,
                     responsive: true,
+                    // CHANGED: Click to Play for lessons
                     autoplay: false,
                     muted: false,
                     controls: true
@@ -843,15 +855,18 @@
             if (user) {
                 const { data: profile } = await supabaseClient.from('profiles').select('has_access').eq('id', user.id).single();
                 if (profile && profile.has_access) {
+                    // Paid
                     if(priceDisplay) priceDisplay.style.display = 'none';
                     if(ctaContainer) ctaContainer.innerHTML = `<button onclick="showSection('lms')" class="btn btn-primary" style="width:100%">ENTER COURSE</button>`;
                 } else {
+                    // Logged in, not paid
                     if(ctaContainer) ctaContainer.innerHTML = `
                         <button onclick="openTrailer()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
                         <button onclick="checkLoginAndPay()" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
                     `;
                 }
             } else {
+                // Guest
                  if(ctaContainer) ctaContainer.innerHTML = `
                     <button onclick="openTrailer()" class="btn btn-outline-purple" style="width: 100%;">EXPLORE THE COURSE</button>
                     <button onclick="checkLoginAndPay()" class="btn btn-primary" style="width: 100%;">Enroll Now</button>
