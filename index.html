@@ -121,6 +121,21 @@
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #666; transition:0.3s;}
         .close-modal:hover { color: white; }
 
+        /* NEW: Trailer Overlay Styles */
+        #trailer-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8) url('https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/course-preview-1.jpg') center/cover;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 10; transition: 0.3s;
+        }
+        #trailer-overlay:hover { filter: brightness(1.2); }
+        .play-btn-circle {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: var(--neon-purple); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px; box-shadow: 0 0 30px var(--neon-purple);
+        }
+
         @media (max-width: 900px) {
             .mobile-only { display: block; }
             .header-logo-text { font-size: 1.2rem; }
@@ -183,7 +198,7 @@
                     <div>
                         <h4 style="color: var(--secondary); text-shadow: 0 0 10px var(--secondary);">The Fingadelic Academy</h4>
                         <h2 style="font-size: 3rem; margin-bottom: 20px;">Master The <br><span class="highlight" style="color: var(--neon-purple); text-shadow: 0 0 20px var(--neon-purple);">Sound</span></h2>
-                        <p style="color: #ccc; margin-bottom: 30px;">You've heard the music. Now learn how it's made. Fingazz opens up his session files to teach the production secrets behind his futuristic "Electro-Dub-Funk" style.</p>
+                        <p style="color: #ccc; margin-bottom: 30px;">You've heard the music. Now learn how it's made. Fingazz opens up his session files to teach the production secrets behind his "Electro-Dub-Funk" style.</p>
                     </div>
                     <div class="featured-course-card">
                         <h3 style="font-size: 2rem; color: white; margin-bottom: 10px;">Future Funk 4 All</h3>
@@ -371,8 +386,14 @@
         <div class="trailer-modal-box">
             <div class="close-modal" onclick="closeTrailer()">×</div>
             <h3 style="margin-bottom: 15px; text-transform:uppercase; color:white;">Course Preview</h3>
-            <div style="padding:56.25% 0 0 0;position:relative;">
-                <iframe id="trailer-video-frame" src="https://player.vimeo.com/video/1165258315?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Course Trailer"></iframe>
+            
+            <div id="trailer-wrapper" style="position:relative; padding:56.25% 0 0 0;">
+                <iframe id="trailer-video-frame" src="https://player.vimeo.com/video/76979871?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Course Trailer"></iframe>
+                
+                <div id="trailer-overlay" onclick="playTrailerWithSound()">
+                    <div class="play-btn-circle"><i class="fas fa-play"></i></div>
+                    <div style="margin-top:10px; font-weight:900;">WATCH TRAILER</div>
+                </div>
             </div>
         </div>
     </div>
@@ -392,11 +413,23 @@
 
         function openTrailer() {
             document.getElementById('trailer-modal').style.display = 'flex';
+            // Reset overlay
+            document.getElementById('trailer-overlay').style.display = 'flex';
+            
             // Init player if first time
             if (!trailerPlayer) {
                 trailerPlayer = new Vimeo.Player(document.querySelector('#trailer-video-frame'));
             }
-            trailerPlayer.play();
+            // Do NOT play yet, wait for overlay click
+        }
+        
+        function playTrailerWithSound() {
+            document.getElementById('trailer-overlay').style.display = 'none';
+            if(trailerPlayer) {
+                trailerPlayer.setVolume(1).then(() => {
+                    trailerPlayer.play();
+                });
+            }
         }
 
         function closeTrailer() {
@@ -558,7 +591,7 @@
                     8.1 TOP LINE - TALKBOX - 8.2 TOP LINE - HARMONY ENGINE - 8.3 WRAP UP
 <br><br>
                     <strong>Class Resources:</strong><br>
-                    <a href="https://www.thetalkstar.com" target="_blank" style="color:var(--primary); text-decoration:underline;">• Get your TalkStar professional talkbox NOW 20% off with coupon code "FF4A20" & FREE Talkbox Master Class!</a><br>
+                    <a href="https://www.thetalkstar.com" target="_blank" style="color:var(--primary); text-decoration:underline;">• Get your TalkStar professional talkbox NOW 20% off with coupon code "FF4A20"</a><br>
                  `,
                 downloadLink: "#", 
                 downloadName: "No Download"
@@ -601,8 +634,9 @@
                 vimeoPlayer = new Vimeo.Player('video-display', {
                     url: videoUrl,
                     responsive: true,
-                    autoplay: true,
-                    muted: true,
+                    // CHANGED: Click to Play for lessons
+                    autoplay: false,
+                    muted: false,
                     controls: true
                 });
             }
