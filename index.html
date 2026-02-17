@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FINGADELIC | The Official Site of Fingazz</title>
     
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/fingadelic/fingadelic-site/main/images/favicon.png">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     
@@ -849,6 +851,52 @@
             }
         }
 
+        async function attemptLogin() {
+            const email = document.getElementById('student-email').value;
+            const password = document.getElementById('student-pass').value;
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            
+            if (!error) {
+                closeLoginModal();
+                updateCourseUI(data.user);
+                updateNavButton({ user: data.user });
+                if (window.pendingCheckout) {
+                    openCheckout();
+                    window.pendingCheckout = false;
+                }
+            } else {
+                document.getElementById('login-error').innerText = error.message;
+            }
+        }
+
+        async function attemptSignUp() {
+            const email = document.getElementById('student-email').value;
+            const password = document.getElementById('student-pass').value;
+            
+            if (!email || !password) {
+                document.getElementById('login-error').innerText = "Please enter both email and password.";
+                return;
+            }
+
+            const { data, error } = await supabaseClient.auth.signUp({
+                email: email,
+                password: password,
+            });
+
+            if (!error) {
+                alert("Account created! You are now logged in.");
+                closeLoginModal();
+                updateCourseUI(data.user);
+                updateNavButton({ user: data.user });
+                if (window.pendingCheckout) {
+                    openCheckout();
+                    window.pendingCheckout = false;
+                }
+            } else {
+                document.getElementById('login-error').innerText = error.message;
+            }
+        }
+
         async function updateCourseUI(user) {
             const priceDisplay = document.getElementById('course-price-display');
             const ctaContainer = document.getElementById('course-cta-container');
@@ -947,3 +995,4 @@
     </script>
 </body>
 </html>
+}
