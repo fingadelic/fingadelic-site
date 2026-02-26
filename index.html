@@ -999,7 +999,37 @@
         // --- PAYPAL ---
         if(document.getElementById('paypal-button-container')) {
              paypal.Buttons({
-                createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: currentPrice } }] }),
+                // UPDATED: Explicitly tell PayPal this is a Digital Good with NO shipping
+                createOrder: (data, actions) => {
+                    return actions.order.create({
+                        application_context: {
+                            shipping_preference: 'NO_SHIPPING' // Skips the shipping address requirement
+                        },
+                        purchase_units: [{
+                            description: 'Future Funk 4 All - Digital Course Access',
+                            amount: {
+                                currency_code: 'USD',
+                                value: currentPrice,
+                                breakdown: {
+                                    item_total: {
+                                        currency_code: 'USD',
+                                        value: currentPrice
+                                    }
+                                }
+                            },
+                            items: [{
+                                name: 'Future Funk 4 All Course',
+                                description: 'Lifetime access to the Fingadelic Academy',
+                                unit_amount: {
+                                    currency_code: 'USD',
+                                    value: currentPrice
+                                },
+                                quantity: '1',
+                                category: 'DIGITAL_GOODS' // The magic word to prevent tracking holds
+                            }]
+                        }]
+                    });
+                },
                 onApprove: async (data, actions) => {
                     await actions.order.capture();
                     const { data: { user } } = await supabaseClient.auth.getUser();
