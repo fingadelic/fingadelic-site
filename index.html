@@ -13,6 +13,7 @@
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://player.vimeo.com/api/player.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
         :root {
@@ -1033,8 +1034,24 @@
                 onApprove: async (data, actions) => {
                     await actions.order.capture();
                     const { data: { user } } = await supabaseClient.auth.getUser();
+                    
                     if (user) {
+                        // 1. Unlock course in database
                         await supabaseClient.from('profiles').update({ has_access: true }).eq('id', user.id);
+                        
+                        // 2. SEND THE WELCOME EMAIL
+                        // Make sure to paste your actual IDs and Key here!
+                        emailjs.send(
+                            'YOUR_SERVICE_ID',    // <-- Replace this
+                            'YOUR_TEMPLATE_ID',   // <-- Replace this
+                            {
+                                student_email: user.email,
+                                student_name: user.user_metadata.full_name || "there" // Uses the name they entered at signup!
+                            },
+                            'YOUR_PUBLIC_KEY'     // <-- Replace this
+                        );
+
+                        // 3. Update the website screen
                         alert("Payment successful! Welcome to the Academy."); 
                         closeCheckout(); 
                         updateCourseUI(user);
