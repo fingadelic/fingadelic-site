@@ -296,23 +296,48 @@
                 <div class="contact-grid">
                     <div>
                         <p style="color: #ccc; margin-bottom: 30px;">For serious inquiries regarding booking, production, remixes, or Talkbox features.</p>
-                        <div class="contact-info-box">
-                            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                            <div><h4 style="font-size: 1rem; color: white; margin-bottom: 5px;">Management / Booking</h4><div style="color: #888;">management@fingadelic.com</div></div>
-                        </div>
-                        <div class="contact-info-box">
-                            <div class="contact-icon"><i class="fas fa-music"></i></div>
-                            <div><h4 style="font-size: 1rem; color: white; margin-bottom: 5px;">Production Inquiries</h4><div style="color: #888;">studio@fingadelic.com</div></div>
-                        </div>
+                        
+                        <a href="https://instagram.com/fingadelic" target="_blank" class="contact-info-box" style="text-decoration: none; cursor: pointer;">
+                            <div class="contact-icon"><i class="fab fa-instagram"></i></div>
+                            <div>
+                                <h4 style="font-size: 1rem; color: white; margin-bottom: 5px;">Follow on Instagram</h4>
+                                <div style="color: #888;">Behind the scenes & updates</div>
+                            </div>
+                        </a>
+
+                        <a href="https://www.youtube.com/@FingazzHouse" target="_blank" class="contact-info-box" style="text-decoration: none; cursor: pointer;">
+                            <div class="contact-icon"><i class="fab fa-youtube"></i></div>
+                            <div>
+                                <h4 style="font-size: 1rem; color: white; margin-bottom: 5px;">Subscribe on YouTube</h4>
+                                <div style="color: #888;">Live streams & beat making</div>
+                            </div>
+                        </a>
                     </div>
                     <div>
-                        <form onsubmit="event.preventDefault(); alert('Message Sent!');">
-                            <div class="form-group"><label class="form-label">Name</label><input type="text" class="form-input" placeholder="Your Name or Agency"></div>
-                            <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="contact@email.com"></div>
-                            <div class="form-group"><label class="form-label">Subject</label><select class="form-select"><option>Booking Request</option><option>Collaboration / Feature</option><option>Press / Media</option><option>General Inquiry</option></select></div>
-                            <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" placeholder="Tell us about your project..."></textarea></div>
-                            <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
-                        </form>
+                        <form action="https://formspree.io/f/mkovypdp" method="POST">
+    			<div class="form-group">
+        			<label class="form-label">Name</label>
+        			<input type="text" name="Name" class="form-input" placeholder="Your Name or Agency" required>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" name="Email" class="form-input" placeholder="contact@email.com" required>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Subject</label>
+        <select name="Subject" class="form-select">
+            <option value="Booking Request">Booking Request</option>
+            <option value="Collaboration / Feature">Collaboration / Feature</option>
+            <option value="Press / Media">Press / Media</option>
+            <option value="General Inquiry">General Inquiry</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea name="Message" class="form-textarea" placeholder="Tell us about your project..." required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+</form>
                     </div>
                 </div>
             </div>
